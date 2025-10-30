@@ -836,84 +836,84 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 - Re-score customers weekly with fresh ML predictions
                 """)
 
-# ========================================================================
-# WHAT-IF ANALYSIS SECTION
-# ========================================================================
+    # ========================================================================
+    # WHAT-IF ANALYSIS SECTION
+    # ========================================================================
 
-st.markdown("---")
-st.header("🔍 What-If Scenario Analysis")
+    st.markdown("---")
+    st.header("🔍 What-If Scenario Analysis")
 
-with st.expander("Run Sensitivity Analysis Across Budget Levels", expanded=False):
-    st.markdown("**Analyze ROI curve and identify optimal budget allocation**")
-    
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        budget_min = st.slider("Minimum Budget", 25000, 200000, 50000, 25000)
-        budget_max = st.slider("Maximum Budget", 100000, 500000, 300000, 25000)
-        budget_step = st.selectbox("Step Size", [25000, 50000, 100000], index=1)
-    
-    with col2:
-        st.markdown("**Settings:**")
-        st.caption(f"Range: ${budget_min:,} - ${budget_max:,}")
-        st.caption(f"Step: ${budget_step:,}")
-        num_scenarios = (budget_max - budget_min) // budget_step + 1
-        st.caption(f"Scenarios: {num_scenarios}")
-    
-    if st.button("🚀 Run Sensitivity Analysis", use_container_width=True):
+    with st.expander("Run Sensitivity Analysis Across Budget Levels", expanded=False):
+        st.markdown("**Analyze ROI curve and identify optimal budget allocation**")
         
-        if not st.session_state.data_loaded:
-            st.error("Please load data first by running an optimization")
-        else:
-            with st.spinner(f"Running {num_scenarios} optimization scenarios... This will take 2-5 minutes"):
-                
-                budget_scenarios = list(range(budget_min, budget_max + budget_step, budget_step))
-                results_list = []
-                
-                progress_bar = st.progress(0)
-                
-                for idx, test_budget in enumerate(budget_scenarios):
-                    try:
-                        # Run optimization
-                        opt = MusicStreamingRetentionOptimizer()
-                        
-                        df = st.session_state.merged_data
-                        df[['customer_id', 'churn_probability']].to_csv('temp_churn_sens.csv', index=False)
-                        feature_cols = ['customer_id', 'subscription_type', 'payment_plan', 
-                                       'weekly_hours', 'weekly_songs_played', 'num_playlists_created']
-                        df[feature_cols].to_csv('temp_features_sens.csv', index=False)
-                        
-                        opt.load_data('temp_churn_sens.csv', 'temp_features_sens.csv', None)
-                        opt.set_constraints({
-                            'weekly_budget': test_budget,
-                            'email_capacity': email_cap,
-                            'call_capacity': call_cap,
-                            'min_high_risk_pct': min_high_risk,
-                            'min_premium_pct': min_premium
-                        })
-                        opt.optimize()
-                        
-                        results_list.append({
-                            'Budget': test_budget,
-                            'Customers': opt.results['kpis']['customers_treated'],
-                            'Churn_Prevented': opt.results['kpis']['expected_churn_reduction'],
-                            'Total_Spend': opt.results['kpis']['total_spend'],
-                            'Retained_CLV': opt.results['kpis']['expected_retained_clv'],
-                            'Net_Value': opt.results['kpis']['net_value'],
-                            'ROI': opt.results['kpis']['roi']
-                        })
-                        
-                        opt.cleanup()
-                        
-                        # Clean up temp files
-                        for f in ['temp_churn_sens.csv', 'temp_features_sens.csv']:
-                            if os.path.exists(f):
-                                os.remove(f)
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            budget_min = st.slider("Minimum Budget", 25000, 200000, 50000, 25000)
+            budget_max = st.slider("Maximum Budget", 100000, 500000, 300000, 25000)
+            budget_step = st.selectbox("Step Size", [25000, 50000, 100000], index=1)
+        
+        with col2:
+            st.markdown("**Settings:**")
+            st.caption(f"Range: ${budget_min:,} - ${budget_max:,}")
+            st.caption(f"Step: ${budget_step:,}")
+            num_scenarios = (budget_max - budget_min) // budget_step + 1
+            st.caption(f"Scenarios: {num_scenarios}")
+        
+        if st.button("🚀 Run Sensitivity Analysis", use_container_width=True):
+            
+            if not st.session_state.data_loaded:
+                st.error("Please load data first by running an optimization")
+            else:
+                with st.spinner(f"Running {num_scenarios} optimization scenarios... This will take 2-5 minutes"):
                     
-                    except Exception as e:
-                        st.warning(f"Scenario at ${test_budget:,} failed: {str(e)}")
+                    budget_scenarios = list(range(budget_min, budget_max + budget_step, budget_step))
+                    results_list = []
                     
-                    progress_bar.progress((idx + 1) / len(budget_scenarios))
+                    progress_bar = st.progress(0)
+                    
+                    for idx, test_budget in enumerate(budget_scenarios):
+                        try:
+                            # Run optimization
+                            opt = MusicStreamingRetentionOptimizer()
+                            
+                            df = st.session_state.merged_data
+                            df[['customer_id', 'churn_probability']].to_csv('temp_churn_sens.csv', index=False)
+                            feature_cols = ['customer_id', 'subscription_type', 'payment_plan', 
+                                           'weekly_hours', 'weekly_songs_played', 'num_playlists_created']
+                            df[feature_cols].to_csv('temp_features_sens.csv', index=False)
+                            
+                            opt.load_data('temp_churn_sens.csv', 'temp_features_sens.csv', None)
+                            opt.set_constraints({
+                                'weekly_budget': test_budget,
+                                'email_capacity': email_cap,
+                                'call_capacity': call_cap,
+                                'min_high_risk_pct': min_high_risk,
+                                'min_premium_pct': min_premium
+                            })
+                            opt.optimize()
+                            
+                            results_list.append({
+                                'Budget': test_budget,
+                                'Customers': opt.results['kpis']['customers_treated'],
+                                'Churn_Prevented': opt.results['kpis']['expected_churn_reduction'],
+                                'Total_Spend': opt.results['kpis']['total_spend'],
+                                'Retained_CLV': opt.results['kpis']['expected_retained_clv'],
+                                'Net_Value': opt.results['kpis']['net_value'],
+                                'ROI': opt.results['kpis']['roi']
+                            })
+                            
+                            opt.cleanup()
+                            
+                            # Clean up temp files
+                            for f in ['temp_churn_sens.csv', 'temp_features_sens.csv']:
+                                if os.path.exists(f):
+                                    os.remove(f)
+                        
+                        except Exception as e:
+                            st.warning(f"Scenario at ${test_budget:,} failed: {str(e)}")
+                        
+                        progress_bar.progress((idx + 1) / len(budget_scenarios))
                 
                 if results_list:
                     scenario_df = pd.DataFrame(results_list)
