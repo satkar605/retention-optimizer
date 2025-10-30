@@ -1022,16 +1022,6 @@ with st.expander("Run Sensitivity Analysis Across Budget Levels", expanded=False
                 else:
                     st.error("No successful scenarios completed")
 
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #666; padding: 2rem 0;'>
-    <p><strong>PlaylistPro Retention Optimizer</strong></p>
-    <p>Powered by XGBoost ML Predictions & Gurobi Optimization</p>
-    <p style='font-size: 0.9rem;'>Built with Streamlit • Python • Gurobi</p>
-</div>
-""", unsafe_allow_html=True)
-
 else:
     # Error state
     st.error("⚠️ Unable to load customer data. Please ensure prediction.csv and test.csv are in the project directory.")
@@ -1041,3 +1031,13 @@ else:
     - `prediction.csv`: XGBoost churn predictions (customer_id, churn_probability)
     - `test.csv`: Customer features (subscription_type, payment_plan, weekly_hours, etc.)
     """)
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style='text-align: center; color: #666; padding: 2rem 0;'>
+    <p><strong>PlaylistPro Retention Optimizer</strong></p>
+    <p>Powered by XGBoost ML Predictions & Gurobi Optimization</p>
+    <p style='font-size: 0.9rem;'>Built with Streamlit • Python • Gurobi</p>
+</div>
+""", unsafe_allow_html=True)
