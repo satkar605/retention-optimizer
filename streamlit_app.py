@@ -445,6 +445,16 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 'min_segment_coverage_pct': min_segment_coverage
             })
             
+            # Debug: Show what constraints were set
+            st.write("**🔍 Constraints Set:**")
+            st.write(f"- Budget: ${budget:,}")
+            st.write(f"- Email Cap: {email_cap:,}")
+            st.write(f"- Call Cap: {call_cap:,}")
+            st.write(f"- Min High-Risk: {min_high_risk:.0%}")
+            st.write(f"- Min Premium: {min_premium:.0%}")
+            st.write(f"- Max Action Saturation: {max_action_pct:.0%}")
+            st.write(f"- Min Segment Coverage: {min_segment_coverage:.0%}")
+            
             # Step 4: Run optimization
             status_text.text("🚀 Solving optimization model (this may take 30-90 seconds)...")
             progress_bar.progress(80)
