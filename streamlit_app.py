@@ -726,12 +726,12 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                         st.warning("⚠️ Email capacity binding")
                 
                 with col2:
-                    call_used = assignments[assignments['channel'] == 'call']['customer_id'].count()
-                    call_util = call_used / call_cap if call_cap > 0 else 0
-                    st.metric("Call", f"{call_used:,} / {call_cap:,}")
-                    st.progress(min(call_util, 1.0))
-                    if call_util > 0.95:
-                        st.warning("⚠️ Call capacity binding")
+                    push_used = assignments[assignments['channel'].isin(['in_app', 'push'])]['customer_id'].count()
+                    push_util = push_used / push_cap if push_cap > 0 else 0
+                    st.metric("Push/In-App", f"{push_used:,} / {push_cap:,}")
+                    st.progress(min(push_util, 1.0))
+                    if push_util > 0.95:
+                        st.warning("⚠️ Push/In-App capacity binding")
                 
                 with col3:
                     budget_util = kpis['total_spend'] / budget if budget > 0 else 0
