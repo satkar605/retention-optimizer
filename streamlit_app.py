@@ -286,13 +286,36 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
         )
     
     with col4:
-        # Calculate at-risk CLV using actual engagement data
-        # Simple proxy: weekly_hours * $10/hour * 52 weeks * 2 years
-        df['estimated_clv'] = df['weekly_hours'] * 10 * 52 * 2
+        # Calculate at-risk CLV using realistic subscription economics
+        # CLV based on subscription type and expected lifetime
+        def calculate_clv(row):
+            sub_type = row['subscription_type']
+            payment_plan = row.get('payment_plan', 'Monthly')
+            
+            # Monthly revenue by subscription type
+            monthly_revenue = {
+                'Premium': 15,
+                'Family': 20,
+                'Student': 10,
+                'Free': 3  # Ad revenue
+            }
+            
+            # Expected lifetime (months) by payment plan
+            lifetime_months = {
+                'Yearly': 24,  # Yearly plans stay longer
+                'Monthly': 12  # Monthly plans average 1 year
+            }
+            
+            revenue = monthly_revenue.get(sub_type, 10)
+            lifetime = lifetime_months.get(payment_plan, 12)
+            
+            return revenue * lifetime
+        
+        df['estimated_clv'] = df.apply(calculate_clv, axis=1)
         at_risk_value = (df['churn_probability'] * df['estimated_clv']).sum()
         st.metric(
             label="At-Risk CLV",
-            value=f"${at_risk_value/1e6:.1f}M",
+            value=f"${at_risk_value/1e3:.1f}K",
             help="Total customer lifetime value at risk of churn"
         )
     
