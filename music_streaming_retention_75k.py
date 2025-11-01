@@ -368,6 +368,37 @@ class MusicStreamingRetentionOptimizer:
                             name="min_premium"
                         )
         
+        
+        # Action Saturation Cap (Dr. Yi's feedback #1)
+        # Prevents any single action from dominating the campaign
+        if 'max_action_pct' in self.constraints and self.constraints['max_action_pct'] < 1.0:
+            num_customers = len(self.customers_df)
+            max_per_action = int(self.constraints['max_action_pct'] * num_customers)
+            
+            for action_id in self.actions_df['action_id']:
+                action_pairs = [e for e in eligible if e[1] == action_id]
+                if action_pairs:
+                    self.model.addConstr(
+                        gp.quicksum(x[e[0], e[1]] for e in action_pairs) <= max_per_action,
+                        name=f"saturation_action_{action_id}"
+                    )
+        
+        # Fairness/Coverage Floor by Subscription Segment (Dr. Yi's feedback #2)
+        # Ensures each subscription type gets minimum coverage
+        if 'min_segment_coverage_pct' in self.constraints and self.constraints['min_segment_coverage_pct'] > 0:
+            if 'subscription_type' in self.customers_df.columns:
+                for sub_type in self.customers_df['subscription_type'].unique():
+                    segment_ids = set(
+                        self.customers_df[self.customers_df['subscription_type'] == sub_type]['customer_id']
+                    )
+                    if segment_ids:
+                        min_segment_treat = int(self.constraints['min_segment_coverage_pct'] * len(segment_ids))
+                        segment_pairs = [e for e in eligible if e[0] in segment_ids and e[1] > 0]
+                        if segment_pairs:
+                            self.model.addConstr(
+                                gp.quicksum(x[e[0], e[1]] for e in segment_pairs) >= min_segment_treat,
+                                name=f"fairness_{sub_type}"
+                            )
         print(f"\nð Solving...\n")
         self.model.optimize()
         
