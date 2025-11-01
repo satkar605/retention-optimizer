@@ -56,6 +56,8 @@ Where:
 
 **Total Variables:** 250 customers × 8 actions = **2,000 binary decision variables**
 
+**Gurobi Academic License Limitation:** Gurobi's free academic license restricts optimization models to a maximum of 2,000 decision variables. Since our model has exactly 250 customers × 8 possible actions = 2,000 variables, we are at the precise limit of the free license. This is why we use a 250-customer sample for demonstration purposes. In production deployment with PlaylistPro's full customer base of 75,000 at-risk customers per week, the model would require 75,000 × 8 = 600,000 decision variables, which exceeds the free license limit by 300-fold. Scaling to production would necessitate either: (1) purchasing a Gurobi commercial license (approximately $2,500-4,000 annually for academic institutions), or (2) implementing a decomposition strategy where the 75,000 customers are partitioned into 300 batches of 250 customers each, solved sequentially, though this approach sacrifices global optimality for computational tractability.
+
 ---
 
 ## 2. CONSTRAINTS
