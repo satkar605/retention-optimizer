@@ -504,6 +504,16 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 st.write(f"- Expected Retained CLV: ${kpis['expected_retained_clv']:,.0f}")
                 st.write(f"- Net Value: ${kpis['net_value']:,.0f}")
                 st.write(f"- ROI: {kpis['roi']:.1f}%")
+                
+            # Show binding constraints
+            st.write("**🔍 Binding Constraints:**")
+            binding_found = False
+            for constr in optimizer.model.getConstrs():
+                if abs(constr.Slack) < 0.01 and 'one_action' not in constr.ConstrName:
+                    st.write(f"- **{constr.ConstrName}**: BINDING (no slack)")
+                    binding_found = True
+            if not binding_found:
+                st.warning("⚠️ NO CONSTRAINTS ARE BINDING! Budget/capacity too loose - optimizer has infinite slack!")
             
             st.success("🎉 Optimization completed successfully!")
             
