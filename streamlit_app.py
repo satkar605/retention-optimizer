@@ -328,13 +328,11 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
         )
     
     with col4:
-        high_csi = (df['customer_service_inquiries'] == 'High').sum()
+        avg_playlists = df['num_playlists_created'].mean()
         st.metric(
-            label="High CSI",
-            value=f"{high_csi:,}",
-            delta=f"{high_csi/len(df)*100:.1f}%",
-            delta_color="inverse",
-            help="Customers with high service inquiry volume"
+            label="Avg Playlists Created",
+            value=f"{avg_playlists:.1f}",
+            help="Average number of playlists per customer"
         )
     
     st.markdown("---")
