@@ -213,6 +213,26 @@ with st.sidebar:
         help="Minimum percentage of Premium customers to treat"
     ) / 100.0
     
+    # Action Saturation Cap
+    max_action_pct = st.slider(
+        "Max Action Saturation (%)",
+        min_value=20,
+        max_value=100,
+        value=50,
+        step=5,
+        help="No single action can be used for more than X% of customers"
+    ) / 100.0
+    
+    # Fairness Coverage Floor
+    min_segment_coverage = st.slider(
+        "Min Segment Coverage (%)",
+        min_value=0,
+        max_value=40,
+        value=15,
+        step=5,
+        help="Each subscription segment must receive at least X% coverage"
+    ) / 100.0
+    
     st.markdown("---")
     
     # Run optimization button
@@ -420,7 +440,9 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 'email_capacity': email_cap,
                 'call_capacity': call_cap,
                 'min_high_risk_pct': min_high_risk,
-                'min_premium_pct': min_premium
+                'min_premium_pct': min_premium,
+                'max_action_pct': max_action_pct,
+                'min_segment_coverage_pct': min_segment_coverage
             })
             
             # Step 4: Run optimization
@@ -887,7 +909,9 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                                 'email_capacity': email_cap,
                                 'call_capacity': call_cap,
                                 'min_high_risk_pct': min_high_risk,
-                                'min_premium_pct': min_premium
+                                'min_premium_pct': min_premium,
+                                'max_action_pct': max_action_pct,
+                                'min_segment_coverage_pct': min_segment_coverage
                             })
                             opt.optimize()
                             
