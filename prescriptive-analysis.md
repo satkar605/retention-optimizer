@@ -34,7 +34,7 @@ Where:
   x[i,k] = 0  otherwise
 ```
 
-**Interpretation:** Each decision variable represents a customer-action pairing. For example, `x[12345, 2] = 1` means we assign "20% Discount Offer" (action 2) to customer 12345.
+Each decision variable represents a customer-action pairing. For example, `x[12345, 2] = 1` means we assign "20% Discount Offer" (action 2) to customer 12345.
 
 ### 1.2 Variable Type
 
@@ -70,7 +70,7 @@ Where:
   B = $150 (weekly budget)
 ```
 
-**Interpretation:** Total campaign expenditure across all customer-action assignments cannot exceed the weekly retention budget of $150 (approximately 20% of monthly revenue).
+Total campaign expenditure across all customer-action assignments cannot exceed the weekly retention budget of $150 (approximately 20% of monthly revenue).
 
 **Linearity:** This is a linear constraint as it sums the product of constant coefficients (c[k]) and binary variables (x[i,k]).
 
@@ -83,7 +83,7 @@ Where:
   C[email] = 120 (maximum weekly emails)
 ```
 
-**Interpretation:** The marketing team can send a maximum of 120 emails per week (approximately 50% of the customer base), preventing email fatigue and respecting operational limits.
+The marketing team can send a maximum of 120 emails per week (approximately 50% of the customer base), preventing email fatigue and respecting operational limits.
 
 #### In-App/Push Notification Capacity Constraint
 ```
@@ -94,7 +94,7 @@ Where:
   C[push] = 100 (maximum weekly push/in-app messages)
 ```
 
-**Interpretation:** The product team can deliver a maximum of 100 in-app messages and push notifications per week, ensuring reasonable user experience.
+The product team can deliver a maximum of 100 in-app messages and push notifications per week, ensuring reasonable user experience.
 
 ---
 
@@ -104,7 +104,7 @@ Where:
 Σ[k∈K] x[i,k] ≤ 1  for all i ∈ I
 ```
 
-**Interpretation:** Each customer receives at most one action (email, discount, in-app message, or nothing). Multiple simultaneous interventions would create poor user experience and inflate costs.
+Each customer receives at most one action (email, discount, in-app message, or nothing). Multiple simultaneous interventions would create poor user experience and inflate costs.
 
 **Linearity:** This is a linear constraint for each customer i, with 250 such constraints total.
 
@@ -122,7 +122,7 @@ Where:
   |H| ≈ 127 customers
 ```
 
-**Interpretation:** At least 60% of high-risk customers must receive proactive outreach. This prevents the optimizer from ignoring at-risk customers in favor of only high-value targets.
+At least 60% of high-risk customers must receive proactive outreach. This prevents the optimizer from ignoring at-risk customers in favor of only high-value targets.
 
 **Business Justification:** Brand reputation and strategic mandate require reaching out to customers about to churn.
 
@@ -136,7 +136,7 @@ Where:
   |P| ≈ 62 customers
 ```
 
-**Interpretation:** At least 40% of Premium customers must receive retention actions, ensuring VIP treatment for the highest-value segment (which represents approximately 60% of total revenue).
+At least 40% of Premium customers must receive retention actions, ensuring VIP treatment for the highest-value segment (which represents approximately 60% of total revenue).
 
 ---
 
@@ -151,7 +151,7 @@ Where:
   |I| = 250 (total customers)
 ```
 
-**Interpretation:** No single action can be assigned to more than 50% of customers (125 customers maximum). This prevents the optimizer from selecting only the cheapest action (e.g., basic emails) and forces campaign diversity.
+No single action can be assigned to more than 50% of customers (125 customers maximum). This prevents the optimizer from selecting only the cheapest action (e.g., basic emails) and forces campaign diversity.
 
 **Business Impact:** Ensures balanced use of multiple channels, preventing email fatigue and improving overall effectiveness.
 
@@ -317,27 +317,13 @@ As a benchmark comparison, we implemented a greedy heuristic that ranks all cust
 
 ### 6.1 Budget Sensitivity Curve
 
-**Chart Type:** Line chart with dual y-axes
-
-**Description:** This chart displays the relationship between weekly budget (x-axis) and two key metrics: expected net value (primary y-axis, blue line) and ROI percentage (secondary y-axis, orange line). The chart reveals diminishing returns beyond $200 budget, with ROI declining sharply as budget increases.
-
-**Key Insight:** The optimal budget allocation is $150-$200, where we balance high absolute value with strong ROI.
-
-[Chart would show:]
-- X-axis: Budget ($50 to $500)
-- Y-axis (left): Net Value ($0 to $4,000)
-- Y-axis (right): ROI (0% to 2000%)
-- Blue line: Net value (concave, flattening after $200)
-- Orange line: ROI (declining exponentially)
-- Vertical reference line at $150 (current budget)
+A line chart with dual y-axes displays the relationship between weekly budget and two key metrics: expected net value and ROI percentage. The x-axis ranges from $50 to $500, with the primary y-axis showing net value ($0 to $4,000) as a blue line and the secondary y-axis displaying ROI (0% to 2000%) as an orange line. The net value curve exhibits concave behavior, flattening after $200, while ROI declines exponentially as budget increases. A vertical reference line at $150 marks the current budget allocation. The optimal budget allocation falls between $150-$200, where we balance high absolute value with strong ROI.
 
 ---
 
 ### 6.2 Constraint Binding Analysis
 
-**Chart Type:** Horizontal bar chart
-
-**Description:** This chart shows the utilization rate of each operational constraint, highlighting which constraints are binding (100% utilization) and which have slack.
+A horizontal bar chart illustrates the utilization rate of each operational constraint, highlighting which constraints are binding (100% utilization) and which have slack. The table below summarizes the constraint status.
 
 | Constraint              | Limit | Used | Utilization | Status      |
 |-------------------------|-------|------|-------------|-------------|
@@ -349,15 +335,13 @@ As a benchmark comparison, we implemented a greedy heuristic that ranks all cust
 | Action Saturation (Email)| 125  | 125  | 100%        | **BINDING** |
 | Fairness Floor (all)    | 10    | 10-14| 100-140%    | Met/Exceeded|
 
-**Key Insight:** Email capacity and action saturation are the primary bottlenecks. Relaxing these constraints would yield the highest marginal value increases.
+Email capacity and action saturation emerge as the primary bottlenecks. Relaxing these constraints would yield the highest marginal value increases.
 
 ---
 
 ### 6.3 Action Mix Distribution
 
-**Chart Type:** Stacked bar chart by subscription segment
-
-**Description:** This chart shows how actions are distributed across the four subscription segments (Premium, Free, Family, Student), revealing whether the solution achieves balanced, fair coverage.
+A stacked bar chart by subscription segment displays how actions are distributed across the four subscription segments (Premium, Free, Family, Student), revealing whether the solution achieves balanced, fair coverage. The table below presents the action distribution.
 
 | Segment  | No Action | Email | Discount Email | In-App | Push | Total Treated |
 |----------|-----------|-------|----------------|--------|------|---------------|
@@ -367,15 +351,13 @@ As a benchmark comparison, we implemented a greedy heuristic that ranks all cust
 | Student  | 51 (81%)  | 7     | 3              | 1      | 1    | 12 (19%)      |
 | **Total**| **194**   | **31**| **15**         | **6**  | **4**| **56 (22%)**  |
 
-**Key Insight:** All segments receive minimum 15% coverage (fairness constraint is satisfied). Premium customers receive higher coverage (39%) reflecting their higher CLV, but not to the exclusion of other segments.
+All segments receive minimum 15% coverage, satisfying the fairness constraint. Premium customers receive higher coverage (39%) reflecting their higher CLV, but not to the exclusion of other segments.
 
 ---
 
 ### 6.4 Top 20 Highest-Impact Customer Assignments
 
-**Chart Type:** Table with sparklines
-
-**Description:** This table lists the 20 customer-action assignments with the highest expected net value, providing transparency into which decisions drive the most value.
+The table below lists the 20 customer-action assignments with the highest expected net value, providing transparency into which decisions drive the most value.
 
 | Rank | Customer ID | Segment | Churn Risk | CLV  | Action          | Cost | Expected Retained CLV | Net Value |
 |------|-------------|---------|------------|------|-----------------|------|-----------------------|-----------|
@@ -386,15 +368,13 @@ As a benchmark comparison, we implemented a greedy heuristic that ranks all cust
 | 5    | 56789       | Premium | 0.82       | $450 | Push Exclusive  | $12  | $125                  | $113      |
 | ...  | ...         | ...     | ...        | ...  | ...             | ...  | ...                   | ...       |
 
-**Key Insight:** High-value assignments cluster among Premium and Family segments with churn risk >70% and CLV >$250. These 20 assignments account for approximately 35% of total expected net value.
+High-value assignments cluster among Premium and Family segments with churn risk exceeding 70% and CLV exceeding $250. These 20 assignments account for approximately 35% of total expected net value.
 
 ---
 
 ### 6.5 ROI by Customer Segment
 
-**Chart Type:** Grouped bar chart
-
-**Description:** This chart compares the investment (cost) and return (expected retained CLV) for each subscription segment, calculating segment-level ROI.
+A grouped bar chart compares the investment (cost) and return (expected retained CLV) for each subscription segment, calculating segment-level ROI. The table below presents the financial analysis.
 
 | Segment  | Total Cost | Expected Retained CLV | Net Value | ROI   | Customers Treated |
 |----------|------------|----------------------|-----------|-------|-------------------|
@@ -404,7 +384,7 @@ As a benchmark comparison, we implemented a greedy heuristic that ranks all cust
 | Student  | $36        | $450                 | $414      | 1250% | 12                |
 | **Total**| **$160**   | **$2,070**           | **$1,910**| **1294%** | **56**        |
 
-**Key Insight:** All segments deliver >1000% ROI, justifying equitable treatment. Premium segment delivers the highest absolute net value ($762), but Student and Family segments offer comparable ROI percentages when treated.
+All segments deliver ROI exceeding 1000%, justifying equitable treatment. Premium segment delivers the highest absolute net value ($762), but Student and Family segments offer comparable ROI percentages when treated.
 
 ---
 
