@@ -159,34 +159,34 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("💰 Budget & Capacity")
     
-    # Budget slider
+    # Budget slider (scaled for 250 customers)
     budget = st.slider(
         "Weekly Budget ($)",
-        min_value=25000,
-        max_value=500000,
-        value=150000,
-        step=25000,
+        min_value=1000,
+        max_value=25000,
+        value=5000,
+        step=1000,
         format="$%d",
-        help="Total retention spending budget per week"
+        help="Total retention spending budget per week (scaled for 250 customers)"
     )
     
-    # Email capacity
+    # Email capacity (scaled for 250 customers)
     email_cap = st.slider(
         "Email Capacity (per week)",
-        min_value=5000,
-        max_value=75000,
-        value=30000,
-        step=5000,
+        min_value=50,
+        max_value=250,
+        value=150,
+        step=10,
         help="Maximum number of emails you can send per week"
     )
     
-    # Call capacity
+    # Call capacity (scaled for 250 customers)
     call_cap = st.slider(
         "Call Center Capacity",
-        min_value=50,
-        max_value=2000,
-        value=500,
-        step=50,
+        min_value=10,
+        max_value=100,
+        value=30,
+        step=5,
         help="Maximum retention calls per week"
     )
     
