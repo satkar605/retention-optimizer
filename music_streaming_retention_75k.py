@@ -201,21 +201,21 @@ class MusicStreamingRetentionOptimizer:
             },
             {
                 'action_id': 5,
-                'action_name': 'Retention Specialist Call',
-                'channel': 'call',
-                'cost': 50,
-                'uplift': 0.30,
+                'action_name': 'In-App Personalized Offer',
+                'channel': 'in_app',
+                'cost': 8,
+                'uplift': 0.22,
                 'eligible_segment': 'high_value',
-                'description': 'Personal outreach from retention team'
+                'description': 'Personalized playlist + exclusive content recommendation'
             },
             {
                 'action_id': 6,
-                'action_name': 'VIP Concierge Service',
-                'channel': 'call',
-                'cost': 100,
-                'uplift': 0.40,
+                'action_name': 'Push: Exclusive Content Bundle',
+                'channel': 'push',
+                'cost': 12,
+                'uplift': 0.28,
                 'eligible_segment': 'high_value',
-                'description': 'Dedicated account manager + exclusive perks'
+                'description': 'Push notification for exclusive artist content + early releases'
             },
             {
                 'action_id': 7,
@@ -239,8 +239,11 @@ class MusicStreamingRetentionOptimizer:
             constraints_dict: Dictionary with keys:
                 - weekly_budget: Total retention budget per week
                 - email_capacity: Max emails per week
-                - call_capacity: Max calls per week
+                - call_capacity: Max in-app/push notifications per week
                 - min_high_risk_pct: Min % of high-risk to treat (0-1)
+                - min_premium_pct: Min % of premium customers to treat (0-1)
+                - max_action_pct: Max % of customers receiving any single action (0-1)
+                - min_segment_coverage_pct: Min % coverage per subscription segment (0-1)
         """
         self.constraints = constraints_dict
         print(f"\nð¯ Operational Constraints Set:")
@@ -331,13 +334,15 @@ class MusicStreamingRetentionOptimizer:
                 name="email_capacity"
             )
         
-        # Call capacity
+        # In-app/Push notification capacity (includes 'call', 'in_app', 'push' channels)
         if 'call_capacity' in self.constraints:
-            call_actions = set(self.actions_df[self.actions_df['channel'] == 'call']['action_id'])
-            call_pairs = [e for e in eligible if e[1] in call_actions]
+            interactive_actions = set(
+                self.actions_df[self.actions_df['channel'].isin(['call', 'in_app', 'push'])]['action_id']
+            )
+            interactive_pairs = [e for e in eligible if e[1] in interactive_actions]
             self.model.addConstr(
-                gp.quicksum(x[e[0], e[1]] for e in call_pairs) <= self.constraints['call_capacity'],
-                name="call_capacity"
+                gp.quicksum(x[e[0], e[1]] for e in interactive_pairs) <= self.constraints['call_capacity'],
+                name="interactive_capacity"
             )
         
         # Minimum high-risk coverage
@@ -605,12 +610,13 @@ if __name__ == "__main__":
         actions_file=None  # Optional: Or use default actions
     )
     
-    # Set operational constraints
+    # Set operational constraints (scaled for 250-customer demo)
     optimizer.set_constraints({
-        'weekly_budget': 150000,      # $150K weekly retention budget
-        'email_capacity': 30000,      # Can send 30K emails per week
-        'call_capacity': 500,         # 500 agent calls per week
-        'min_high_risk_pct': 0.60     # Treat at least 60% of high-risk customers
+        'weekly_budget': 150,         # $150 weekly retention budget (~20% of $600/month revenue)
+        'email_capacity': 120,        # Can send 120 emails per week
+        'call_capacity': 100,         # 100 in-app/push notifications per week
+        'min_high_risk_pct': 0.60,    # Treat at least 60% of high-risk customers
+        'min_premium_pct': 0.40       # Treat at least 40% of premium customers
     })
     
     # Run optimization

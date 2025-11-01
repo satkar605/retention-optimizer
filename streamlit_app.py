@@ -159,35 +159,35 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("💰 Budget & Capacity")
     
-    # Budget slider (scaled for 250 customers)
+    # Budget slider (realistic for 250 customers generating ~$2.5K/month)
     budget = st.slider(
         "Weekly Budget ($)",
-        min_value=1000,
-        max_value=25000,
-        value=5000,
-        step=1000,
+        min_value=50,
+        max_value=500,
+        value=150,
+        step=25,
         format="$%d",
-        help="Total retention spending budget per week (scaled for 250 customers)"
+        help="10-20% of monthly revenue (~$250-500/mo = $60-125/wk) is typical for retention"
     )
     
-    # Email capacity (scaled for 250 customers)
+    # Email capacity (realistic for 250 customers)
     email_cap = st.slider(
         "Email Capacity (per week)",
         min_value=50,
         max_value=250,
-        value=150,
+        value=120,
         step=10,
-        help="Maximum number of emails you can send per week"
+        help="Maximum retention emails per week (about 50% of customer base)"
     )
     
-    # Call capacity (scaled for 250 customers)
-    call_cap = st.slider(
-        "Call Center Capacity",
-        min_value=10,
-        max_value=100,
-        value=30,
-        step=5,
-        help="Maximum retention calls per week"
+    # In-app/Push notification capacity (replaces unrealistic calls)
+    push_cap = st.slider(
+        "In-App/Push Notification Capacity",
+        min_value=50,
+        max_value=250,
+        value=100,
+        step=10,
+        help="In-app messages and push notifications (realistic for music streaming app)"
     )
     
     st.markdown("---")
@@ -461,7 +461,7 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
             optimizer.set_constraints({
                 'weekly_budget': budget,
                 'email_capacity': email_cap,
-                'call_capacity': call_cap,
+                'call_capacity': push_cap,  # Using push/in-app instead of actual calls
                 'min_high_risk_pct': min_high_risk,
                 'min_premium_pct': min_premium,
                 'max_action_pct': max_action_pct,
@@ -472,7 +472,7 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
             st.write("**🔍 Constraints Set:**")
             st.write(f"- Budget: ${budget:,}")
             st.write(f"- Email Cap: {email_cap:,}")
-            st.write(f"- Call Cap: {call_cap:,}")
+            st.write(f"- Push/In-App Cap: {push_cap:,}")
             st.write(f"- Min High-Risk: {min_high_risk:.0%}")
             st.write(f"- Min Premium: {min_premium:.0%}")
             st.write(f"- Max Action Saturation: {max_action_pct:.0%}")
@@ -925,9 +925,9 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
         col1, col2 = st.columns([3, 1])
         
         with col1:
-            budget_min = st.slider("Minimum Budget", 25000, 200000, 50000, 25000)
-            budget_max = st.slider("Maximum Budget", 100000, 500000, 300000, 25000)
-            budget_step = st.selectbox("Step Size", [25000, 50000, 100000], index=1)
+            budget_min = st.slider("Minimum Budget", 50, 300, 100, 25)
+            budget_max = st.slider("Maximum Budget", 200, 1000, 400, 50)
+            budget_step = st.selectbox("Step Size", [25, 50, 100], index=1)
         
         with col2:
             st.markdown("**Settings:**")
