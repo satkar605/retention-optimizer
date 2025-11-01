@@ -60,11 +60,11 @@ if 'merged_data' not in st.session_state:
 def load_customer_data():
     """Load and merge prediction and customer feature data"""
     try:
-        # Load XGBoost predictions
-        predictions = pd.read_csv('prediction.csv')
+        # Load XGBoost predictions (5K sample for demo performance)
+        predictions = pd.read_csv('prediction_5k.csv')
         
-        # Load customer features
-        features = pd.read_csv('test.csv')
+        # Load customer features (5K sample for demo performance)
+        features = pd.read_csv('test_5k.csv')
         
         # Merge datasets
         merged = predictions.merge(features, on='customer_id', how='left')
@@ -1024,12 +1024,14 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
 
 else:
     # Error state
-    st.error("⚠️ Unable to load customer data. Please ensure prediction.csv and test.csv are in the project directory.")
+    st.error("⚠️ Unable to load customer data. Please ensure prediction_5k.csv and test_5k.csv are in the project directory.")
     
     st.markdown("""
     ### Required Files:
-    - `prediction.csv`: XGBoost churn predictions (customer_id, churn_probability)
-    - `test.csv`: Customer features (subscription_type, payment_plan, weekly_hours, etc.)
+    - `prediction_5k.csv`: XGBoost churn predictions (customer_id, churn_probability)
+    - `test_5k.csv`: Customer features (subscription_type, payment_plan, weekly_hours, etc.)
+    
+    *Note: Using 5K sample for optimal demo performance. Methodology scales to 75K+ in production.*
     """)
 
 # Footer
