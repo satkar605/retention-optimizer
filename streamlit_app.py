@@ -477,6 +477,9 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
             st.write(f"- Min Premium: {min_premium:.0%}")
             st.write(f"- Max Action Saturation: {max_action_pct:.0%}")
             st.write(f"- Min Segment Coverage: {min_segment_coverage:.0%}")
+            st.write("**🔍 Customer Economics:**")
+            st.write(f"- CLV Range: ${df['estimated_clv'].min():.0f} - ${df['estimated_clv'].max():.0f}")
+            st.write(f"- Avg CLV: ${df['estimated_clv'].mean():.0f}")
             
             # Step 4: Run optimization
             status_text.text("🚀 Solving optimization model (this may take 30-90 seconds)...")
@@ -491,6 +494,16 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
             # Store results
             st.session_state.optimizer = optimizer
             st.session_state.results_ready = True
+            
+            # Debug: Show what optimizer returned
+            if 'kpis' in optimizer.results:
+                kpis = optimizer.results['kpis']
+                st.write("**🔍 Optimizer Output:**")
+                st.write(f"- Customers Treated: {kpis['customers_treated']}")
+                st.write(f"- Total Spend: ${kpis['total_spend']:,.0f}")
+                st.write(f"- Expected Retained CLV: ${kpis['expected_retained_clv']:,.0f}")
+                st.write(f"- Net Value: ${kpis['net_value']:,.0f}")
+                st.write(f"- ROI: {kpis['roi']:.1f}%")
             
             st.success("🎉 Optimization completed successfully!")
             
