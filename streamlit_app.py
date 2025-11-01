@@ -60,11 +60,11 @@ if 'merged_data' not in st.session_state:
 def load_customer_data():
     """Load and merge prediction and customer feature data"""
     try:
-        # Load XGBoost predictions (5K sample for demo performance)
-        predictions = pd.read_csv('prediction_5k.csv')
+        # Load XGBoost predictions (250 sample for Gurobi free license)
+        predictions = pd.read_csv('prediction_250.csv')
         
-        # Load customer features (5K sample for demo performance)
-        features = pd.read_csv('test_5k.csv')
+        # Load customer features (250 sample for Gurobi free license)
+        features = pd.read_csv('test_250.csv')
         
         # Merge datasets
         merged = predictions.merge(features, on='customer_id', how='left')
@@ -211,30 +211,6 @@ with st.sidebar:
         value=40,
         step=5,
         help="Minimum percentage of Premium customers to treat"
-    ) / 100.0
-    
-    st.markdown("---")
-    st.subheader("🎯 Advanced Constraints")
-    st.caption("Dr. Yi's recommendations for balanced campaigns")
-    
-    # Action Saturation Cap (Dr. Yi feedback #1)
-    max_action_pct = st.slider(
-        "Max Action Saturation (%)",
-        min_value=20,
-        max_value=100,
-        value=50,
-        step=5,
-        help="No single action can be used for more than X% of customers (prevents email-only campaigns)"
-    ) / 100.0
-    
-    # Fairness Coverage Floor (Dr. Yi feedback #2)
-    min_segment_coverage = st.slider(
-        "Min Segment Fairness Coverage (%)",
-        min_value=0,
-        max_value=40,
-        value=15,
-        step=5,
-        help="Each subscription segment (Premium/Free/Family/Student) must receive at least X% coverage"
     ) / 100.0
     
     st.markdown("---")
@@ -444,9 +420,7 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 'email_capacity': email_cap,
                 'call_capacity': call_cap,
                 'min_high_risk_pct': min_high_risk,
-                'min_premium_pct': min_premium,
-                'max_action_pct': max_action_pct,
-                'min_segment_coverage_pct': min_segment_coverage
+                'min_premium_pct': min_premium
             })
             
             # Step 4: Run optimization
@@ -913,9 +887,7 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                                 'email_capacity': email_cap,
                                 'call_capacity': call_cap,
                                 'min_high_risk_pct': min_high_risk,
-                                'min_premium_pct': min_premium,
-                                'max_action_pct': max_action_pct,
-                                'min_segment_coverage_pct': min_segment_coverage
+                                'min_premium_pct': min_premium
                             })
                             opt.optimize()
                             
@@ -1050,14 +1022,14 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
 
 else:
     # Error state
-    st.error("⚠️ Unable to load customer data. Please ensure prediction_5k.csv and test_5k.csv are in the project directory.")
+    st.error("⚠️ Unable to load customer data. Please ensure prediction_250.csv and test_250.csv are in the project directory.")
     
     st.markdown("""
     ### Required Files:
-    - `prediction_5k.csv`: XGBoost churn predictions (customer_id, churn_probability)
-    - `test_5k.csv`: Customer features (subscription_type, payment_plan, weekly_hours, etc.)
+    - `prediction_250.csv`: XGBoost churn predictions (customer_id, churn_probability)
+    - `test_250.csv`: Customer features (subscription_type, payment_plan, weekly_hours, etc.)
     
-    *Note: Using 5K sample for optimal demo performance. Methodology scales to 75K+ in production.*
+    *Note: Using 250 customer sample to comply with Gurobi free license limits (2,000 variables max). Methodology scales to 75K+ with commercial license.*
     """)
 
 # Footer
