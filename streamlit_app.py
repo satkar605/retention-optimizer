@@ -235,12 +235,36 @@ with st.sidebar:
     
     st.markdown("---")
     
+    # Lightweight sidebar pre-check to prevent obvious invalid combos
+    run_disabled = False
+    if st.session_state.data_loaded and st.session_state.merged_data is not None:
+        _dfp = st.session_state.merged_data
+        N = len(_dfp)
+        # Rough required counts from floors
+        hi_cnt = int((_dfp['churn_probability'] > 0.5).sum()) if 'churn_probability' in _dfp else int(0.5*N)
+        prem_cnt = int((_dfp['subscription_type'] == 'Premium').sum()) if 'subscription_type' in _dfp else int(0.25*N)
+        req_high = int(min_high_risk * hi_cnt)
+        req_prem = int(min_premium * prem_cnt)
+        seg_sizes = []
+        if 'subscription_type' in _dfp:
+            for seg in ['Premium','Free','Family','Student']:
+                seg_sizes.append(int((_dfp['subscription_type']==seg).sum()))
+        else:
+            seg_sizes = [int(N/4)]*4
+        req_segments = sum(int(min_segment_coverage * s) for s in seg_sizes)
+        required_min = max(req_high, req_prem, req_segments)
+        total_cap_preview = email_cap + push_cap
+        if total_cap_preview < required_min:
+            st.warning("Increase capacities or relax floors: capacity below required minimums.")
+            run_disabled = True
+
     # Run optimization button
     run_optimization = st.button(
         "🚀 RUN OPTIMIZATION",
         type="primary",
         use_container_width=True,
-        help="Run Gurobi optimization with current settings"
+        help="Run Gurobi optimization with current settings",
+        disabled=run_disabled
     )
     
     st.markdown("---")
@@ -454,6 +478,61 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                 actions_file=None
             )
             
+            # -------- Preflight feasibility checks (guard against bad slider combos) --------
+            def preflight_checks(df_in, actions_df_in, budget_in, email_cap_in, push_cap_in,
+                                 min_high_in, min_premium_in, max_action_pct_in, seg_floor_in):
+                errors_local = []
+                N = len(df_in)
+                # Estimate cheapest non-zero action cost
+                if 'cost' in actions_df_in.columns:
+                    non_zero = actions_df_in.loc[actions_df_in['cost'] > 0, 'cost']
+                    min_cost = float(non_zero.min()) if not non_zero.empty else 1.0
+                else:
+                    min_cost = 1.0
+
+                # Segment sizes (fallbacks if columns missing)
+                high_risk_count = int((df_in['churn_probability'] > 0.5).sum()) if 'churn_probability' in df_in.columns else int(0.5 * N)
+                premium_count = int((df_in['subscription_type'] == 'Premium').sum()) if 'subscription_type' in df_in.columns else int(0.25 * N)
+
+                seg_sizes = []
+                if 'subscription_type' in df_in.columns:
+                    for seg in ['Premium', 'Free', 'Family', 'Student']:
+                        seg_sizes.append(int((df_in['subscription_type'] == seg).sum()))
+                else:
+                    seg_sizes = [int(N/4)] * 4
+
+                req_high = int(min_high_in * max(high_risk_count, 0))
+                req_premium = int(min_premium_in * max(premium_count, 0))
+                req_segments = sum(int(seg_floor_in * s) for s in seg_sizes)
+
+                total_cap = int(email_cap_in) + int(push_cap_in)
+                required_min = max(req_high, req_premium, req_segments)
+
+                if total_cap < required_min:
+                    errors_local.append("Increase capacities or relax floors: capacity below required minimums.")
+                if budget_in < min_cost * required_min:
+                    errors_local.append("Budget too low to cover minimum required treatments at the cheapest cost.")
+                if max_action_pct_in < seg_floor_in:
+                    errors_local.append("Max action saturation is below segment floor; relax one of them.")
+
+                return errors_local
+
+            errors = preflight_checks(
+                df,
+                optimizer.actions_df,
+                budget,
+                email_cap,
+                push_cap,
+                min_high_risk,
+                min_premium,
+                max_action_pct,
+                min_segment_coverage
+            )
+
+            if errors:
+                st.error("Please fix before running:\n- " + "\n- ".join(errors))
+                st.stop()
+
             # Step 3: Set constraints
             status_text.text("🎯 Setting operational constraints...")
             progress_bar.progress(60)
@@ -770,11 +849,17 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
             
             with col1:
                 # Binding constraints
-                st.markdown("**Binding Constraints:**")
+            st.markdown("**Binding Constraints:**")
                 
                 binding_found = False
                 
-                if budget_util > 0.95:
+            # ---- Safe utilization calculations (avoid NameError / division by zero) ----
+            email_used = len(assignments[assignments['channel'].isin(['email'])]) if 'channel' in assignments.columns else 0
+            call_used = len(assignments[assignments['channel'].isin(['in_app', 'push'])]) if 'channel' in assignments.columns else 0
+            email_util = (email_used / email_cap) if email_cap else 0.0
+            call_util = (call_used / push_cap) if push_cap else 0.0
+
+            if budget_util > 0.95:
                     st.warning(f"""
                     **💰 Budget (BINDING)**
                     - Current: ${kpis['total_spend']:,.0f} / ${budget:,.0f} ({budget_util*100:.1f}%)
@@ -790,10 +875,10 @@ if st.session_state.data_loaded and st.session_state.merged_data is not None:
                     """)
                     binding_found = True
                 
-                if call_util > 0.95:
+            if call_util > 0.95:
                     st.warning(f"""
                     **📞 Call Capacity (BINDING)**
-                    - Current: {call_used:,} / {call_cap:,} ({call_util*100:.1f}%)
+                    - Current: {call_used:,} / {push_cap:,} ({call_util*100:.1f}%)
                     - Recommendation: Increase agent hours or shift high-value customers to VIP email
                     """)
                     binding_found = True

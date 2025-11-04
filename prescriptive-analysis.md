@@ -51,8 +51,6 @@ Each decision variable represents a customer-action pairing. For example, `x[123
 
 **Total Variables:** 250 customers × 8 actions = **2,000 binary decision variables**
 
-**Gurobi Academic License Limitation:** Gurobi's free academic license restricts optimization models to a maximum of 2,000 decision variables. Since our model has exactly 250 customers × 8 possible actions = 2,000 variables, we are at the precise limit of the free license. This is why we use a 250-customer sample for demonstration purposes. In production deployment with PlaylistPro's full customer base of 75,000 at-risk customers per week, the model would require 75,000 × 8 = 600,000 decision variables, which exceeds the free license limit by 300-fold. Scaling to production would necessitate either: (1) purchasing a Gurobi commercial license (approximately $2,500-4,000 annually for academic institutions), or (2) implementing a decomposition strategy where the 75,000 customers are partitioned into 300 batches of 250 customers each, solved sequentially, though this approach sacrifices global optimality for computational tractability.
-
 ---
 
 ## 2. CONSTRAINTS
@@ -140,7 +138,9 @@ At least 40% of Premium customers must receive retention actions, ensuring VIP t
 
 ---
 
-### 2.4 Advanced Constraints (Dr. Yi's Recommendations)
+### 2.4 Advanced Policy Constraints
+
+Following advisor feedback on the initial model formulation, we incorporated two additional constraints to ensure campaign diversity and demographic fairness.
 
 #### Action Saturation Cap (≤ constraint)
 ```
@@ -226,165 +226,200 @@ The objective function is a **linear combination** of the binary decision variab
 
 ## 4. SENSITIVITY ANALYSIS
 
-We conducted sensitivity analysis on key parameters to understand constraint impact and identify optimization leverage points.
+We conducted sensitivity analysis on key parameters to understand how constraint adjustments affect the objective value and identify optimization leverage points. We tested budget levels, action saturation caps, and fairness constraints.
 
 ### 4.1 Budget Sensitivity
 
-**Methodology:** We varied the weekly budget from $50 to $500 in $25 increments while holding all other constraints constant, then re-optimized and recorded the objective value.
+We varied the weekly budget from $100 to $500 in $25-50 increments while holding all other constraints constant (email capacity: 120, push/in-app capacity: 100, all policy constraints at default levels). For each budget level, we re-optimized the model and recorded the objective value, customers treated, and total spend.
 
 **Results:**
 
-| Budget | Customers Treated | Total Spend | Expected Net Value | ROI | Marginal Value per $25 |
-|--------|-------------------|-------------|-------------------|-----|------------------------|
-| $50    | 42                | $50         | $950              | 1900% | -                    |
-| $75    | 63                | $74         | $1,420            | 1919% | $18.80              |
-| $100   | 84                | $99         | $1,840            | 1859% | $16.80              |
-| $125   | 105               | $124        | $2,210            | 1782% | $14.80              |
-| $150   | 126               | $149        | $2,550            | 1711% | $13.60              |
-| $175   | 145               | $174        | $2,840            | 1623% | $11.60              |
-| $200   | 160               | $199        | $3,080            | 1548% | $9.60               |
-| $250   | 168               | $248        | $3,290            | 1327% | $4.20               |
-| $300   | 172               | $298        | $3,380            | 1134% | $1.80               |
-| $400   | 175               | $398        | $3,430            | 862%  | $0.50               |
-| $500   | 176               | $498        | $3,445            | 692%  | $0.15               |
+[TO BE COMPLETED: Run dashboard with budgets $100, $125, $150, $175, $200, $225, $250, $300, $400, $500 and fill in this table]
 
-**Key Findings:**
+| Budget | Customers Treated | Total Spend | Expected Net Value | ROI | 
+|--------|-------------------|-------------|-------------------|-----|
+| $100   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $125   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $150   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $175   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $200   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $225   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $250   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $300   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $400   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
+| $500   | [RUN]             | [RUN]       | [RUN]             | [RUN]% |
 
-The analysis reveals three primary findings. First, marginal value decreases sharply after $200 budget, with diminishing returns evident in the declining marginal value per $25 increment. Second, the optimal budget range of $150-$200 provides the best balance of coverage and ROI, where we maximize absolute value while maintaining strong return percentages. Third, beyond $300, additional budget yields minimal improvement as capacity constraints become binding and prevent further customer treatment expansion.
+**Analysis:**
 
-**Shadow Price Interpretation:** At the current budget of $150, increasing the budget by $1 adds approximately $0.54 in expected net value.
+[TO BE COMPLETED: After running the analysis, describe the pattern you observe]
+- At what budget level do you see diminishing returns?
+- Where is the "knee" in the curve (optimal budget)?
+- What happens to ROI as budget increases?
+- Which constraints become binding at higher budgets?
 
-### 4.2 Email Capacity Sensitivity
+**Shadow Price Interpretation:** [TO BE COMPLETED: At your chosen optimal budget, what is the marginal value of adding $1 more?]
 
-**Methodology:** We varied email capacity from 60 to 200 emails in increments of 20, holding budget at $150.
+---
+
+### 4.2 Action Saturation Cap Sensitivity
+
+We varied the maximum action saturation constraint from 30% to 70% in 10% increments while holding budget at $150 and all other constraints constant. This tests the tradeoff between campaign diversity (lower caps force variety) and objective value (higher caps allow more of the best action).
 
 **Results:**
 
-| Email Capacity | Customers Treated | Email Actions Used | Net Value | Binding? |
-|----------------|-------------------|-------------------|-----------|----------|
-| 60             | 98                | 60                | $2,120    | Yes      |
-| 80             | 118               | 80                | $2,380    | Yes      |
-| 100            | 138               | 100               | $2,640    | Yes      |
-| 120            | 158               | 120               | $2,890    | Yes      |
-| 140            | 165               | 132               | $2,950    | No       |
-| 160            | 165               | 132               | $2,950    | No       |
+[TO BE COMPLETED: Run dashboard with Max Action Saturation at 30%, 40%, 50%, 60%, 70%]
 
-**Key Finding:** Email capacity is binding up to 120 emails. Beyond 120, budget becomes the limiting factor. At current settings (120 emails, $150 budget), both constraints are near-binding.
+| Saturation Cap | Customers Treated | Net Value | Email Usage | Discount Email | In-App/Push |
+|----------------|-------------------|-----------|-------------|----------------|-------------|
+| 30%            | [RUN]             | [RUN]     | [RUN]       | [RUN]          | [RUN]       |
+| 40%            | [RUN]             | [RUN]     | [RUN]       | [RUN]          | [RUN]       |
+| 50% (baseline) | [RUN]             | [RUN]     | [RUN]       | [RUN]          | [RUN]       |
+| 60%            | [RUN]             | [RUN]     | [RUN]       | [RUN]          | [RUN]       |
+| 70%            | [RUN]             | [RUN]     | [RUN]       | [RUN]          | [RUN]       |
 
-**Recommendation:** Prioritize increasing email capacity to 140-150 before increasing budget, as it provides higher marginal return.
+**Analysis:**
 
-### 4.3 Action Saturation Cap Sensitivity
+[TO BE COMPLETED: What happens as you increase the cap?]
+- Does net value keep increasing with higher caps?
+- At what point does the solution become too homogeneous (dominated by one action)?
+- What's the optimal saturation level that balances diversity and value?
 
-**Methodology:** We varied the saturation cap from 30% to 70% in 10% increments.
+**Recommendation:** [Based on your results, what cap do you recommend and why?]
+
+---
+
+### 4.3 Minimum Segment Coverage (Fairness Floor)
+
+We tested different minimum coverage requirements for each subscription segment (Premium, Free, Family, Student) to understand the cost of ensuring fairness. We varied the minimum from 0% (no fairness constraint) to 25% in 5% increments.
 
 **Results:**
 
-| Saturation Cap | Email Usage | Discount Email | In-App | Net Value | Action Diversity Index |
-|----------------|-------------|----------------|--------|-----------|------------------------|
-| 30%            | 75 (30%)    | 75 (30%)       | 50     | $2,680    | 0.82                   |
-| 40%            | 100 (40%)   | 60 (24%)       | 40     | $2,920    | 0.76                   |
-| 50%            | 125 (50%)   | 35 (14%)       | 30     | $3,120    | 0.68                   |
-| 60%            | 150 (60%)   | 10 (4%)        | 10     | $3,180    | 0.52                   |
-| 70%            | 168 (67%)   | 8 (3%)         | 4      | $3,210    | 0.44                   |
+[TO BE COMPLETED: Run dashboard with Min Segment Coverage at 0%, 5%, 10%, 15%, 20%, 25%]
 
-**Key Finding:** Lower saturation caps (40-50%) provide the best balance between campaign diversity and ROI. At 60-70%, the solution becomes too homogeneous (dominated by basic emails), reducing long-term effectiveness.
+| Min Coverage | Customers Treated | Net Value | Premium Treated | Free Treated | Family Treated | Student Treated |
+|--------------|-------------------|-----------|----------------|--------------|----------------|-----------------|
+| 0% (unconstrained) | [RUN]       | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
+| 5%           | [RUN]             | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
+| 10%          | [RUN]             | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
+| 15% (baseline) | [RUN]           | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
+| 20%          | [RUN]             | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
+| 25%          | [RUN]             | [RUN]     | [RUN]          | [RUN]        | [RUN]          | [RUN]           |
 
-**Current Setting:** 50% cap is optimal for balancing diversity and value.
+**Analysis:**
 
----
+[TO BE COMPLETED: How much value do you sacrifice for fairness?]
+- At 0%, which segments get ignored completely?
+- What's the cost (in net value) of ensuring minimum coverage?
+- Is the fairness constraint binding at 15%?
+- At what coverage level does the constraint become too restrictive?
 
-## 5. METHODS ATTEMPTED
-
-### 5.1 Linear Programming (LP) Relaxation
-
-We initially tested a continuous LP relaxation by allowing decision variables to take fractional values between 0 and 1 instead of requiring binary assignments. The LP relaxation produced an objective value of $3,820, representing a 10.6% improvement over the integer solution. However, 78% of the variables were fractional, with examples such as assigning 0.73 of a discount email to customer 12345. Such fractional solutions are operationally meaningless as we cannot partially execute retention actions. While LP relaxation provides a useful upper bound on the optimal value, the solution is not implementable. We therefore proceeded with mixed-integer programming to ensure operationally executable treatment plans.
-
-### 5.2 Mixed-Integer Linear Programming (MILP)
-
-We implemented the final model using binary decision variables with linear objective and constraints, solved using the Gurobi optimizer. The algorithm employs branch-and-cut methods with LP relaxation at each node of the search tree. The solver produces proven optimal solutions with 0.0% optimality gap, guaranteeing mathematical optimality rather than heuristic approximations. This approach provides operationally implementable solutions suitable for production deployment. MILP represents the recommended approach for this application.
-
-### 5.3 Non-Linear Programming (NLP) - Not Applicable
-
-We considered non-linear formulations that would incorporate quadratic terms to model interaction effects between different actions or customer characteristics. However, three factors led us to reject this approach. First, the business problem is naturally linear, as expected values are additive and do not exhibit multiplicative interactions that would require quadratic terms. Second, NLP solvers do not guarantee global optimality for mixed-integer problems, potentially producing suboptimal solutions. Third, without clear business benefit or improved solution quality, additional computational complexity is unwarranted. The linear formulation proves both appropriate and sufficient for this application.
-
-### 5.4 Greedy Heuristic (Benchmark)
-
-As a benchmark comparison, we implemented a greedy heuristic that ranks all customer-action pairs by expected net value and assigns them in descending order until constraints are violated. The greedy approach produced an objective value of $2,940, representing a 14.9% performance degradation compared to the optimal MILP solution. More critically, the greedy solution violated the fairness coverage floor constraints for Free and Family customer segments, demonstrating algorithmic bias. While the greedy heuristic offers computational advantages, it produces suboptimal and ethically problematic solutions. The MILP approach proves superior for this application.
+**Ethical Consideration:** [Discuss why some minimum coverage is important even if it reduces net value]
 
 ---
 
-## 6. VISUALIZATION OF RESULTS
+### 4.4 Combined Policy Constraint Analysis
 
-### 6.1 Budget Sensitivity Curve
+We tested extreme scenarios where all policy constraints are adjusted together to understand their combined effect.
 
-A line chart with dual y-axes displays the relationship between weekly budget and two key metrics: expected net value and ROI percentage. The x-axis ranges from $50 to $500, with the primary y-axis showing net value ($0 to $4,000) as a blue line and the secondary y-axis displaying ROI (0% to 2000%) as an orange line. The net value curve exhibits concave behavior, flattening after $200, while ROI declines exponentially as budget increases. A vertical reference line at $150 marks the current budget allocation. The optimal budget allocation falls between $150-$200, where we balance high absolute value with strong ROI.
+**Scenarios:**
+
+[TO BE COMPLETED: Run these 3 scenarios]
+
+| Scenario | High-Risk Min | Premium Min | Saturation Max | Segment Min | Net Value | Customers Treated |
+|----------|---------------|-------------|----------------|-------------|-----------|-------------------|
+| **Loose Policy** (maximize value) | 40% | 20% | 70% | 5% | [RUN] | [RUN] |
+| **Baseline Policy** (current) | 60% | 40% | 50% | 15% | [RUN] | [RUN] |
+| **Strict Policy** (maximize fairness) | 80% | 60% | 30% | 25% | [RUN] | [RUN] |
+
+**Analysis:**
+
+[TO BE COMPLETED: What's the value-fairness tradeoff?]
+- How much net value do you gain by relaxing all policies (Loose vs Baseline)?
+- How much do you sacrifice for maximum fairness (Strict vs Baseline)?
+- What's your recommended policy balance?
 
 ---
+
+## 5. OPTIMIZATION METHOD
+
+We implemented the retention optimization model as a mixed-integer linear programming problem using the Gurobi optimizer. The model employs binary decision variables with linear objective and constraints, solved using branch-and-cut methods with LP relaxation at each node of the search tree. The solver produces proven optimal solutions with 0.0% optimality gap, guaranteeing mathematical optimality. This approach provides operationally implementable solutions suitable for production deployment.
+
+---
+
+## 6. OPTIMIZATION RESULTS
+
+### 6.1 Baseline Solution
+
+[TO BE COMPLETED: Run dashboard with default settings and fill in]
+
+Using the baseline configuration (budget: $150, email capacity: 120, push/in-app capacity: 100), the optimization model produced the following results:
+
+- **Customers Treated:** [RUN] out of 250 at-risk customers ([RUN]% coverage)
+- **Total Weekly Spend:** $[RUN] ([RUN]% of budget utilized)
+- **Expected Retained CLV:** $[RUN]
+- **Net Value:** $[RUN]
+- **ROI:** [RUN]%
 
 ### 6.2 Constraint Binding Analysis
 
-A horizontal bar chart illustrates the utilization rate of each operational constraint, highlighting which constraints are binding (100% utilization) and which have slack. The table below summarizes the constraint status.
+[TO BE COMPLETED: Look at debug output "🔍 Binding Constraints" section and fill in]
+
+The table below summarizes which constraints limited the solution.
 
 | Constraint              | Limit | Used | Utilization | Status      |
 |-------------------------|-------|------|-------------|-------------|
-| Email Capacity          | 120   | 120  | 100%        | **BINDING** |
-| Budget                  | $150  | $149 | 99%         | Near-binding|
-| High-Risk Coverage      | 76    | 82   | 108%        | Exceeded    |
-| Premium Coverage        | 25    | 24   | 96%         | Met         |
-| Push/In-App Capacity    | 100   | 40   | 40%         | Slack       |
-| Action Saturation (Email)| 125  | 125  | 100%        | **BINDING** |
-| Fairness Floor (all)    | 10    | 10-14| 100-140%    | Met/Exceeded|
+| Email Capacity          | 120   | [RUN]| [RUN]%      | [RUN]       |
+| Budget                  | $150  | [RUN]| [RUN]%      | [RUN]       |
+| High-Risk Coverage      | [RUN] | [RUN]| [RUN]%      | [RUN]       |
+| Premium Coverage        | [RUN] | [RUN]| [RUN]%      | [RUN]       |
+| Push/In-App Capacity    | 100   | [RUN]| [RUN]%      | [RUN]       |
+| Action Saturation       | 125   | [RUN]| [RUN]%      | [RUN]       |
+| Fairness Floor          | [RUN] | [RUN]| [RUN]%      | [RUN]       |
 
-Email capacity and action saturation emerge as the primary bottlenecks. Relaxing these constraints would yield the highest marginal value increases.
-
----
+[TO BE COMPLETED: Which 2-3 constraints are binding? Write 1-2 sentences about what this means]
 
 ### 6.3 Action Mix Distribution
 
-A stacked bar chart by subscription segment displays how actions are distributed across the four subscription segments (Premium, Free, Family, Student), revealing whether the solution achieves balanced, fair coverage. The table below presents the action distribution.
+[TO BE COMPLETED: Export treatment plan CSV and count actions by segment]
+
+The table below shows how actions are distributed across subscription segments.
 
 | Segment  | No Action | Email | Discount Email | In-App | Push | Total Treated |
 |----------|-----------|-------|----------------|--------|------|---------------|
-| Premium  | 38 (61%)  | 12    | 8              | 3      | 1    | 24 (39%)      |
-| Free     | 52 (84%)  | 6     | 2              | 1      | 1    | 10 (16%)      |
-| Family   | 53 (84%)  | 6     | 2              | 1      | 1    | 10 (16%)      |
-| Student  | 51 (81%)  | 7     | 3              | 1      | 1    | 12 (19%)      |
-| **Total**| **194**   | **31**| **15**         | **6**  | **4**| **56 (22%)**  |
+| Premium  | [RUN]     | [RUN] | [RUN]          | [RUN]  | [RUN]| [RUN]         |
+| Free     | [RUN]     | [RUN] | [RUN]          | [RUN]  | [RUN]| [RUN]         |
+| Family   | [RUN]     | [RUN] | [RUN]          | [RUN]  | [RUN]| [RUN]         |
+| Student  | [RUN]     | [RUN] | [RUN]          | [RUN]  | [RUN]| [RUN]         |
+| **Total**| [RUN]     | [RUN] | [RUN]          | [RUN]  | [RUN]| [RUN]         |
 
-All segments receive minimum 15% coverage, satisfying the fairness constraint. Premium customers receive higher coverage (39%) reflecting their higher CLV, but not to the exclusion of other segments.
+[TO BE COMPLETED: Do all segments meet the 15% fairness floor? Which segment gets the most/least coverage? Why?]
 
----
+### 6.4 Budget Sensitivity Curve
 
-### 6.4 Top 20 Highest-Impact Customer Assignments
+[TO BE COMPLETED: After running Section 4.1 analysis, create a line chart showing Budget (x-axis) vs Net Value (y-axis)]
 
-The table below lists the 20 customer-action assignments with the highest expected net value, providing transparency into which decisions drive the most value.
+A line chart displays the relationship between weekly budget and expected net value. [Describe what you see - where does the curve flatten? What's the optimal budget range?]
 
-| Rank | Customer ID | Segment | Churn Risk | CLV  | Action          | Cost | Expected Retained CLV | Net Value |
-|------|-------------|---------|------------|------|-----------------|------|-----------------------|-----------|
-| 1    | 45123       | Premium | 0.89       | $480 | Discount Email  | $20  | $192                  | $172      |
-| 2    | 12456       | Family  | 0.84       | $360 | In-App Offer    | $8   | $136                  | $128      |
-| 3    | 78901       | Premium | 0.91       | $420 | Discount Email  | $20  | $143                  | $123      |
-| 4    | 34567       | Student | 0.78       | $280 | Premium Trial   | $10  | $131                  | $121      |
-| 5    | 56789       | Premium | 0.82       | $450 | Push Exclusive  | $12  | $125                  | $113      |
-| ...  | ...         | ...     | ...        | ...  | ...             | ...  | ...                   | ...       |
+### 6.5 Top 10 Highest-Impact Customer Assignments
 
-High-value assignments cluster among Premium and Family segments with churn risk exceeding 70% and CLV exceeding $250. These 20 assignments account for approximately 35% of total expected net value.
+[TO BE COMPLETED: From treatment plan CSV, sort by net_value descending and take top 10]
 
----
+The table below lists the 10 customer-action assignments with the highest expected net value.
 
-### 6.5 ROI by Customer Segment
+| Rank | Customer ID | Segment | Churn Risk | CLV  | Action          | Cost | Net Value |
+|------|-------------|---------|------------|------|-----------------|------|-----------|
+| 1    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 2    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 3    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 4    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 5    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 6    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 7    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 8    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 9    | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
+| 10   | [RUN]       | [RUN]   | [RUN]      | [RUN]| [RUN]           | [RUN]| [RUN]     |
 
-A grouped bar chart compares the investment (cost) and return (expected retained CLV) for each subscription segment, calculating segment-level ROI. The table below presents the financial analysis.
-
-| Segment  | Total Cost | Expected Retained CLV | Net Value | ROI   | Customers Treated |
-|----------|------------|----------------------|-----------|-------|-------------------|
-| Premium  | $58        | $820                 | $762      | 1414% | 24                |
-| Free     | $32        | $380                 | $348      | 1188% | 10                |
-| Family   | $34        | $420                 | $386      | 1235% | 10                |
-| Student  | $36        | $450                 | $414      | 1250% | 12                |
-| **Total**| **$160**   | **$2,070**           | **$1,910**| **1294%** | **56**        |
-
-All segments deliver ROI exceeding 1000%, justifying equitable treatment. Premium segment delivers the highest absolute net value ($762), but Student and Family segments offer comparable ROI percentages when treated.
+[TO BE COMPLETED: What pattern do you see? High churn + high CLV = high net value? Which segments dominate?]
 
 ---
 
@@ -402,11 +437,7 @@ For long-term enhancements over Months 2-3, we recommend three strategic initiat
 
 ## 8. LIMITATIONS AND ASSUMPTIONS
 
-The model incorporates several key assumptions that warrant acknowledgment. We assume uplift additivity, meaning action effectiveness is independent of customer characteristics beyond churn risk and customer lifetime value. The model treats each week independently without carryover effects, so customer treatment in week t does not affect eligibility or response in week t+1. We assume perfect execution with 100% delivery success for all assigned actions, ignoring practical issues such as email bounces or application crashes. Finally, churn probabilities remain static for the planning horizon, and we do not model how retention actions dynamically affect future churn risk.
-
-The model exhibits three primary limitations. First, the current implementation operates at demo scale using 250 customers due to Gurobi's free license limit, whereas production deployment requires scaling to 75,000 customers. Second, action costs and uplift values represent estimates that should be calibrated through systematic A/B testing rather than assumed values. Third, customer lifetime value calculations use subscription price and tenure approximations, which may not capture actual CLV variations driven by usage patterns and engagement levels.
-
-Three areas merit future refinement. Incorporating customer heterogeneity through interaction terms between customer characteristics and action effectiveness would improve solution quality. Implementing robust optimization would handle budget variability and parameter uncertainty more effectively. Finally, respecting individual customer communication preferences would ensure GDPR compliance and improve user experience while adding constraint complexity to the model.
+The model operates on several key assumptions. Action effectiveness values represent estimates requiring A/B testing validation. Customer lifetime value calculations use simplified subscription economics. The model treats each week independently without modeling carryover effects. The current implementation uses 250 customers due to Gurobi's free academic license constraint, while production deployment would require 75,000+ customers and a commercial license.
 
 ---
 
