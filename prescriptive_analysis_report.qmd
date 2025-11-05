@@ -74,7 +74,9 @@ pd.set_option("display.float_format", lambda x: f"${x:,.2f}" if abs(x) > 1 else 
 The decision variable *x[i,k]* represents **whether or not a specific customer receives a particular retention action**. In simple terms, the optimization model evaluated every possible combination of customers and marketing actions, then decides which ones to execute.
 
 Each *x[i,k]* acts like an on/off switch:
+
   - A value of **1** means the action is selected for that customer.
+
   - A value of **0** means the action is not selected.
 
 This structure ensures that every customer in the campaign can receive **at most one action**, such as a discount offer, personalized recommendation, or no contact at all. The model's role is to determine the best mix of these binary choices so that the campaign's overall goal is acheived efficiently.
@@ -93,8 +95,11 @@ Where:
 ```
 
 **Example Interpretation:**
+
 - `x[12345, 2] = 1` → Assign "20% Discount Offer" to customer 12345
+
 - `x[67890, 0] = 1` → Assign "No Action" to customer 67890 (do not contact)
+
 - `x[11111, 5] = 1` → Assign "In-App Personalized Offer" to customer 11111
 
 
@@ -218,7 +223,7 @@ These constraints guide how the optimizer allocates actions across customers. Th
 Σ[i∈I] x[i,k] ≤ γ · |I|  for each action k ∈ K
 
 Where:
-  γ = maximum saturation rate (e.g., 0.50)
+   γ = maximum saturation rate (e.g., 0.50)
 ```
 
 This constraint limits any single action to a maximum of 50 percent of all customers. For example, if there are 250 customers, no more than 125 can receive the same offer, such as a discount email or push notification. This rule prevents the optimizer from relying too heavily on one low-cost action and promotes a more balanced campaign mix. As a result, PlaylistPro can maintain engagement variety across channels and tailor outreach strategies to different user segments.
@@ -228,7 +233,7 @@ This constraint limits any single action to a maximum of 50 percent of all custo
 Σ[i∈S] Σ[k∈K, k>0] x[i,k] ≥ δ · |S|  for each segment S ∈ {Premium, Free, Family, Student}
 
 Where:
-  δ = minimum segment coverage rate (e.g., 0.15)
+   δ = minimum segment coverage rate (e.g., 0.15)
 ```
 
 This constraint ensures that every subscription segment receives a minimum level of outreach, set at 15 percent in this case. For example, at least 15 percent of Free, Premium, Family, and Student users must be included in the campaign. This prevents the optimizer from allocating all resources to higher-value groups and helps maintain fairness across customer types. It safeguards against algorithmic bias and ensures PlaylistPro's retention strategy remains inclusive and aligned with its broader customer relationship goals.
