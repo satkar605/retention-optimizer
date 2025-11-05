@@ -1,6 +1,6 @@
 ---
 title: "PlaylistPro Retention Optimization: Prescriptive Analysis"
-subtitle: "MILP Optimization Model - Complete Technical Analysis"
+subtitle: "MILP Optimization Model"
 author: "Satkar Karki, Business Analytics Team"
 date: "November 5, 2025"
 format:
@@ -1004,4 +1004,6 @@ The baseline run demonstrated that the model efficiently utilized the $150 budge
 Sensitivity analysis showed that while increasing the weekly budget leads to higher retained value, the rate of improvement declines sharply beyond $400 to $500. The results indicate that an optimal spending range of $250 to $400 per week offers the best trade-off between cost and retention performance.  
 
 Overall, the optimization model proved effective at prioritizing high-impact customers, respecting operational limits, and ensuring fairness. PlaylistPro can now apply this framework to guide weekly campaign planning, gradually expand its action catalog, and fine-tune predictive inputs through ongoing experimentation. Doing so will help maintain high retention efficiency while maximizing customer lifetime value in a sustainable and data-driven way.
+
+In addition to that, a self-service dashboard has also been deployed for managerial use cases which can be explored at: https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/
 

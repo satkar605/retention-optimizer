@@ -95,7 +95,7 @@ with col1:
     """, unsafe_allow_html=True)
     
     if st.button("🏠 Go to Home Page", use_container_width=True, type="primary"):
-        st.switch_page("pages/1_🏠_Home.py")
+        st.switch_page("pages/1_Home.py")
 
 with col2:
     st.markdown("""
@@ -112,7 +112,7 @@ with col2:
     """, unsafe_allow_html=True)
     
     if st.button("⚙️ Launch Optimizer", use_container_width=True):
-        st.switch_page("pages/2_⚙️_Optimizer.py")
+        st.switch_page("pages/2_Optimizer.py")
 
 with col3:
     st.markdown("""
@@ -129,7 +129,7 @@ with col3:
     """, unsafe_allow_html=True)
     
     if st.button("📊 View Analysis", use_container_width=True):
-        st.switch_page("pages/3_📊_Sensitivity_Analysis.py")
+        st.switch_page("pages/3_Sensitivity_Analysis.py")
 
 st.markdown("---")
 
@@ -212,4 +212,4 @@ st.markdown("""
 # Auto-redirect to Home page after 3 seconds (optional - commented out by default)
 # import time
 # time.sleep(3)
-# st.switch_page("pages/1_🏠_Home.py")
+# st.switch_page("pages/1_Home.py")

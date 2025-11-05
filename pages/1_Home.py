@@ -297,7 +297,7 @@ col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     if st.button("🎯 Launch Optimization Dashboard", type="primary", use_container_width=True):
-        st.switch_page("pages/2_⚙️_Optimizer.py")
+        st.switch_page("pages/2_Optimizer.py")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
