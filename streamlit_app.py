@@ -69,6 +69,21 @@ st.markdown("""
 st.markdown('<p class="hero-title">PlaylistPro Retention Optimization</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">Data-Driven Customer Retention Strategy</p>', unsafe_allow_html=True)
 
+# Quick Access Links at Top
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("**📄 Technical Report**")
+    st.markdown("[Download PDF](prescriptive_analysis_report.pdf)")
+
+with col2:
+    st.markdown("**⚙️ Interactive Optimizer**")
+    st.markdown("[Launch Dashboard](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/2_Optimizer)")
+
+with col3:
+    st.markdown("**📊 Sensitivity Analysis**")
+    st.markdown("[View Analysis](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/3_Sensitivity_Analysis)")
+
 st.markdown("---")
 
 # THE STORY BEGINS - Business Context from Report
@@ -248,28 +263,6 @@ st.info("""
 
 6. **Resource Utilization:** Budget fully utilized while email/push capacity had slack, guiding future resource allocation.
 """)
-
-st.markdown("---")
-
-# Call to Action
-st.markdown("## Access Full Analysis")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("**📄 Technical Report**")
-    st.markdown("[Download PDF](prescriptive_analysis_report.pdf)")
-    st.caption("Complete prescriptive analysis with methodology")
-
-with col2:
-    st.markdown("**⚙️ Interactive Optimizer**")
-    st.markdown("[Launch Dashboard](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/2_Optimizer)")
-    st.caption("Configure constraints and run scenarios")
-
-with col3:
-    st.markdown("**📊 Sensitivity Analysis**")
-    st.markdown("[View Analysis](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/3_Sensitivity_Analysis)")
-    st.caption("Budget optimization insights")
 
 st.markdown("---")
 
