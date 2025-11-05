@@ -1,6 +1,6 @@
 """
-PlaylistPro Retention Optimizer - Landing Page
-Tells the story of the business problem and the optimization solution
+PlaylistPro Retention Optimizer - Single Page Dashboard
+Business context + Key results in one streamlined view
 """
 
 import streamlit as st
@@ -11,7 +11,7 @@ st.set_page_config(
     page_title="PlaylistPro Retention Optimizer",
     page_icon="🎵",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="auto"
 )
 
 # Custom CSS
@@ -79,44 +79,6 @@ PlaylistPro, a music streaming service with **75,000 subscribers**, faces a crit
 **47% annual churn rate** resulting in millions in lost recurring revenue.
 """)
 
-# Problem Scale - Metric Cards
-st.markdown("### The Challenge")
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">47%</div>
-        <div class="metric-label">Annual Churn Rate</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">~35,000</div>
-        <div class="metric-label">Customers Lost/Year</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">$0</div>
-        <div class="metric-label">Data-Driven Strategy</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">???</div>
-        <div class="metric-label">Optimal Budget</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 # The Problem - Directly from Report Introduction
 st.markdown("### The Problem")
@@ -290,34 +252,24 @@ st.info("""
 st.markdown("---")
 
 # Call to Action
-st.markdown("## Next Steps")
+st.markdown("## Access Full Analysis")
 
-st.markdown("""
-Use the interactive dashboard to:
-- Configure budget and operational constraints
-- Run optimization scenarios
-- View detailed treatment plans and ROI projections
-- Export customer lists for execution
-- Analyze budget sensitivity and diminishing returns
-""")
-
-col1, col2, col3 = st.columns([1, 2, 1])
-
-with col2:
-    if st.button("Launch Optimization Dashboard", type="primary", use_container_width=True):
-        st.switch_page("pages/2_Optimizer.py")
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("View Budget Sensitivity Analysis", use_container_width=True):
-        st.switch_page("pages/3_Sensitivity_Analysis.py")
+    st.markdown("**📄 Technical Report**")
+    st.markdown("[Download PDF](prescriptive_analysis_report.pdf)")
+    st.caption("Complete prescriptive analysis with methodology")
 
 with col2:
-    if st.button("Read Full Technical Report", use_container_width=True):
-        st.markdown("[Download PDF Report](prescriptive_analysis_report.pdf)")
+    st.markdown("**⚙️ Interactive Optimizer**")
+    st.markdown("[Launch Dashboard](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/2_Optimizer)")
+    st.caption("Configure constraints and run scenarios")
+
+with col3:
+    st.markdown("**📊 Sensitivity Analysis**")
+    st.markdown("[View Analysis](https://retention-optimizer-7jrnqgd3bkcth2ebhmv8ua.streamlit.app/3_Sensitivity_Analysis)")
+    st.caption("Budget optimization insights")
 
 st.markdown("---")
 
