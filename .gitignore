@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# Temporary files
+temp_*.csv
+*_temp.py
+fix_*.py
+
+# Old backups
+*_old.py
+
+# Quarto intermediate files
+/.quarto/
+*_files/
+
+# Environment
+.env
+venv/
