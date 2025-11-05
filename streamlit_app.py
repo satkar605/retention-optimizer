@@ -119,23 +119,17 @@ with col4:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # The Problem - Directly from Report Introduction
+st.markdown("### The Problem")
+
 st.markdown("""
-<div class="problem-box">
-    <h3>The Problem</h3>
-    <p style="font-size: 1.05rem; line-height: 1.7;">
-    PlaylistPro had <strong>no systematic retention strategy</strong>:
-    </p>
-    <ul style="font-size: 1.05rem; line-height: 1.7;">
-        <li>No predictive analytics to identify high-risk customers</li>
-        <li>Manual, intuition-based targeting decisions</li>
-        <li>Inefficient budget allocation</li>
-        <li>Unclear ROI on retention campaigns</li>
-    </ul>
-    <p style="font-size: 1.05rem; font-weight: 600; margin-top: 1rem; color: #e74c3c;">
-    Result: Millions in lost recurring revenue annually.
-    </p>
-</div>
-""", unsafe_allow_html=True)
+PlaylistPro had no systematic retention strategy:
+- No predictive analytics to identify high-risk customers
+- Manual, intuition-based targeting decisions
+- Inefficient budget allocation
+- Unclear ROI on retention campaigns
+
+**Result:** Millions in lost recurring revenue annually.
+""")
 
 st.markdown("---")
 
