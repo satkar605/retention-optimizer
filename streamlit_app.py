@@ -18,60 +18,61 @@ st.set_page_config(
 st.markdown("""
 <style>
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: bold;
-        color: #1DB954;
+        color: #2c3e50;
         text-align: center;
         margin-bottom: 0.5rem;
     }
     .hero-subtitle {
-        font-size: 1.8rem;
-        color: #666;
+        font-size: 1.5rem;
+        color: #7f8c8d;
         text-align: center;
         margin-bottom: 3rem;
     }
     .problem-box {
-        background-color: #ffebee;
+        background-color: #fff5f5;
         padding: 2rem;
-        border-radius: 10px;
-        border-left: 5px solid #e74c3c;
+        border-radius: 8px;
+        border-left: 4px solid #c0392b;
         margin: 2rem 0;
     }
     .solution-box {
-        background-color: #e8f5e9;
+        background-color: #f0f9ff;
         padding: 2rem;
-        border-radius: 10px;
-        border-left: 5px solid #1DB954;
+        border-radius: 8px;
+        border-left: 4px solid #2980b9;
         margin: 2rem 0;
     }
     .metric-card {
-        background-color: #f8f9fa;
+        background-color: #ffffff;
         padding: 1.5rem;
-        border-radius: 10px;
+        border-radius: 8px;
         text-align: center;
-        border: 2px solid #1DB954;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .metric-value {
         font-size: 2.5rem;
         font-weight: bold;
-        color: #1DB954;
+        color: #2c3e50;
     }
     .metric-label {
-        font-size: 1rem;
-        color: #666;
+        font-size: 0.95rem;
+        color: #7f8c8d;
         margin-top: 0.5rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Hero Section
-st.markdown('<p class="hero-title">🎵 PlaylistPro Retention Crisis</p>', unsafe_allow_html=True)
-st.markdown('<p class="hero-subtitle">From Predictive Analytics to Prescriptive Optimization</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-title">PlaylistPro Retention Optimization</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-subtitle">Data-Driven Customer Retention Strategy</p>', unsafe_allow_html=True)
 
 st.markdown("---")
 
 # THE STORY BEGINS - Business Context from Report
-st.markdown("## 📖 The Story: A Music Streaming Company in Crisis")
+st.markdown("## Business Context")
 
 st.markdown("""
 PlaylistPro is a music streaming service with **75,000 subscribers** across four subscription tiers: 
@@ -82,7 +83,7 @@ dissatisfaction with the service, or simply losing interest. The financial impac
 """)
 
 # Problem Scale - Metric Cards
-st.markdown("### 📉 The Scale of the Problem")
+st.markdown("### The Challenge")
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -123,20 +124,20 @@ st.markdown("<br>", unsafe_allow_html=True)
 # The Problem - Directly from Report Introduction
 st.markdown("""
 <div class="problem-box">
-    <h3>❌ The Problem: No Strategy, Just Guesswork</h3>
-    <p style="font-size: 1.1rem; line-height: 1.8;">
+    <h3>The Problem</h3>
+    <p style="font-size: 1.05rem; line-height: 1.7;">
     Before this project, PlaylistPro had <strong>no systematic approach</strong> to customer retention:
     </p>
-    <ul style="font-size: 1.1rem; line-height: 1.8;">
-        <li><strong>No predictive analytics:</strong> The company couldn't identify which customers were at highest risk of churning</li>
-        <li><strong>Manual, gut-feel decisions:</strong> Marketing managers guessed which customers to target based on intuition</li>
-        <li><strong>Budget waste:</strong> Money spent on low-value customers while high-value, high-risk customers were ignored</li>
-        <li><strong>No optimization:</strong> No framework to allocate limited marketing resources efficiently across 75,000 customers</li>
-        <li><strong>Unclear ROI:</strong> No way to measure whether retention campaigns were actually working</li>
-        <li><strong>Operational chaos:</strong> Email capacity, call center resources, and discount budgets were not coordinated</li>
+    <ul style="font-size: 1.05rem; line-height: 1.7;">
+        <li>No predictive analytics to identify high-risk customers</li>
+        <li>Manual, intuition-based targeting decisions</li>
+        <li>Inefficient budget allocation across customer segments</li>
+        <li>No optimization framework for resource allocation</li>
+        <li>Unclear ROI on retention campaigns</li>
+        <li>Uncoordinated operational capacity (email, calls, discounts)</li>
     </ul>
-    <p style="font-size: 1.2rem; font-weight: bold; margin-top: 1.5rem; color: #c0392b;">
-    💸 Result: Millions in lost recurring revenue every year, with no clear path to improvement.
+    <p style="font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; color: #c0392b;">
+    Result: Millions in lost recurring revenue annually with no clear improvement path.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -144,72 +145,50 @@ st.markdown("""
 st.markdown("---")
 
 # The Solution - Two-Phase Approach from Report
-st.markdown("## ✅ The Solution: Predictive + Prescriptive Analytics")
+st.markdown("## The Solution")
 
 st.markdown("""
-This project developed an **end-to-end data science solution** that combines machine learning predictions 
-with mathematical optimization to create an intelligent, automated retention system.
+An end-to-end analytics solution combining machine learning predictions with mathematical optimization 
+to maximize customer lifetime value retention.
 """)
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
-    ### 🔮 Phase 1: Predictive Analytics
+    ### Predictive Analytics
     
-    **Goal:** Identify who will churn
+    **XGBoost model (94% AUC)** predicts individual churn probability based on:
+    - Subscription type and payment plan
+    - Customer service interactions
+    - Listening hours and engagement metrics
+    - Song skip rate and content preferences
     
-    **Approach:**
-    - Trained multiple ML models (Logistic Regression, Random Forest, XGBoost)
-    - **XGBoost emerged as winner** with 94% AUC
-    - Analyzed 75,000 customers with 20+ features
-    
-    **Key Predictors Discovered:**
-    1. **Subscription type** (Premium vs. Free)
-    2. **Customer service interactions** (complaints signal risk)
-    3. **Listening hours** (low engagement = high risk)
-    4. **Song skip rate** (dissatisfaction indicator)
-    5. **Payment plan** (monthly vs. yearly)
-    
-    **Output:** Churn probability (0-100%) for each customer
-    
-    **Example:**
-    - Customer #12345 (Premium): **72% churn risk**
-    - Customer #67890 (Family): **15% churn risk**
+    **Output:** Churn risk score (0-100%) for each customer
     """)
 
 with col2:
     st.markdown("""
-    ### 🎯 Phase 2: Prescriptive Optimization
+    ### Prescriptive Optimization
     
-    **Goal:** Decide who gets what action
+    **Mixed-Integer Linear Programming** determines optimal action assignments:
     
-    **Approach:**
-    - **Mixed-Integer Linear Programming (MILP)**
-    - **Gurobi solver** (industry-leading optimizer)
-    - 2,000 binary decision variables (250 customers × 8 actions)
+    **Objective:** Maximize (Expected Retained CLV - Campaign Cost)
     
-    **Optimization Objective:**
-    ```
-    Maximize: Expected Retained CLV - Campaign Cost
-    ```
+    **Constraints:**
+    - Budget and operational capacity limits
+    - Minimum coverage for high-risk customers (60%)
+    - Minimum coverage for Premium subscribers (40%)
+    - Campaign diversity requirements (no action >50%)
+    - Fairness across all segments (≥15% each)
     
-    **Constraints Enforced:**
-    1. **Budget limit** ($150/week baseline)
-    2. **Email capacity** (120/week max)
-    3. **Push notification capacity** (100/week max)
-    4. **Fairness:** 60% of high-risk customers must be treated
-    5. **VIP treatment:** 40% of Premium customers covered
-    6. **Diversity:** No single action > 50% of customers
-    7. **Equity:** All segments get ≥15% coverage
-    
-    **Output:** Optimal customer-action assignments
+    **Output:** Customer-action assignments maximizing net value
     """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # How It Works - From Report Section 3
-with st.expander("📚 How the Optimization Works (Technical Details)", expanded=False):
+with st.expander("Technical Details", expanded=False):
     st.markdown("""
     ### Decision Variables
     For each customer *i* and retention action *k*, the model decides:
@@ -249,7 +228,7 @@ with st.expander("📚 How the Optimization Works (Technical Details)", expanded
 st.markdown("---")
 
 # Results - From Report Section 4 & 5
-st.markdown("## 🎉 The Results: Proven ROI & Actionable Insights")
+st.markdown("## Results")
 
 st.markdown("""
 The optimization model was run with a **baseline budget of $150/week** on a sample of 250 customers 
@@ -260,27 +239,27 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
-        label="💰 Net Value Generated",
+        label="Net Value Generated",
         value="$3,479",
         delta="On $150 spend",
         help="Expected CLV retained minus campaign cost"
     )
     st.metric(
-        label="📈 Return on Investment",
+        label="Return on Investment",
         value="2,319%",
-        delta="23x return!",
+        delta="23x return",
         help="(Retained CLV / Cost - 1) × 100"
     )
 
 with col2:
     st.metric(
-        label="👥 Customers Treated",
+        label="Customers Treated",
         value="75 / 250",
         delta="30% coverage",
         help="Optimally selected high-impact customers"
     )
     st.metric(
-        label="🛡️ Churn Prevented",
+        label="Churn Prevented",
         value="~5 customers",
         delta="Per 250 sample",
         help="Expected reduction in churn count"
@@ -288,13 +267,13 @@ with col2:
 
 with col3:
     st.metric(
-        label="🎯 Optimal Budget Range",
+        label="Optimal Budget Range",
         value="$250-400",
         delta="Per week",
         help="Sweet spot before diminishing returns"
     )
     st.metric(
-        label="📊 ROI at Scale ($1,000)",
+        label="ROI at Scale ($1,000)",
         value="1,100%",
         delta="Still excellent",
         help="Diminishing returns but positive value"
@@ -304,112 +283,39 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 # Key Findings - From Report Summary
 st.info("""
-**💡 Key Strategic Findings from the Analysis:**
+**Key Strategic Findings:**
 
-1. **Optimal Budget Discovery:** $250-400/week delivers best ROI before diminishing returns. Beyond $500, efficiency drops significantly.
+1. **Optimal Budget:** $250-400/week delivers best ROI before diminishing returns. Beyond $500, efficiency drops significantly.
 
-2. **Smart Customer Prioritization:** Model correctly focuses on high-risk + high-value customers (Premium/Family subscribers with 70%+ churn probability).
+2. **Customer Prioritization:** Model focuses on high-risk + high-value customers (Premium/Family subscribers with 70%+ churn probability).
 
-3. **Channel Efficiency:** Personalized email is most cost-effective at baseline budget. Higher budgets enable premium channels (calls, in-app offers).
+3. **Channel Efficiency:** Personalized email is most cost-effective at baseline budget. Higher budgets enable premium channels.
 
-4. **Fairness Maintained:** All subscription segments receive minimum 15% coverage, preventing algorithmic bias against lower-value customers.
+4. **Fairness:** All subscription segments receive minimum 15% coverage, preventing algorithmic bias.
 
-5. **Scalability Proven:** Framework scales from 250 (demo) to 75,000 customers with commercial Gurobi license. Methodology is production-ready.
+5. **Scalability:** Framework scales from 250 (demo) to 75,000 customers with commercial Gurobi license.
 
-6. **Constraint Binding Analysis:** Budget was fully utilized (binding), while email/push capacity had slack. This guides future resource allocation.
+6. **Resource Utilization:** Budget fully utilized while email/push capacity had slack, guiding future resource allocation.
 """)
-
-st.markdown("---")
-
-# What Makes This Different
-st.markdown("## 🌟 What Makes This Approach Different?")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("""
-    ### ❌ Traditional Approach (Before)
-    - **Segment-based:** "Send discount to all Premium users"
-    - **Rule-based:** "Target customers who haven't logged in for 30 days"
-    - **One-size-fits-all:** Same action for everyone in a segment
-    - **No optimization:** Budget allocated arbitrarily
-    - **No measurement:** Can't prove ROI
-    - **Reactive:** Wait until churn happens
-    
-    **Result:** Wasted budget, missed opportunities, unclear impact
-    """)
-
-with col2:
-    st.markdown("""
-    ### ✅ Optimization Approach (After)
-    - **Individual-level:** Personalized decision for each customer
-    - **Data-driven:** ML predictions guide targeting
-    - **Optimized:** Mathematical guarantee of best allocation
-    - **Constrained:** Respects budget, capacity, fairness
-    - **Measurable:** Clear ROI metrics (2,319% baseline)
-    - **Proactive:** Prevent churn before it happens
-    
-    **Result:** Maximum value, efficient spending, proven impact
-    """)
-
-st.markdown("---")
-
-# The Technical Foundation - From Report
-st.markdown("## 🔬 The Technical Foundation")
-
-st.markdown("""
-This solution combines cutting-edge techniques from multiple fields:
-""")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("""
-    **🤖 Machine Learning**
-    - XGBoost gradient boosting
-    - 94% AUC performance
-    - Feature importance analysis
-    - Cross-validation
-    - Hyperparameter tuning
-    """)
-
-with col2:
-    st.markdown("""
-    **📊 Operations Research**
-    - Mixed-Integer Linear Programming
-    - Gurobi optimization solver
-    - Constraint satisfaction
-    - Sensitivity analysis
-    - Dual variable interpretation
-    """)
-
-with col3:
-    st.markdown("""
-    **💼 Business Analytics**
-    - Customer lifetime value (CLV)
-    - Return on investment (ROI)
-    - Budget allocation
-    - Fairness metrics
-    - A/B testing framework
-    """)
 
 st.markdown("---")
 
 # Call to Action
-st.markdown("## 🚀 Ready to Explore the Solution?")
+st.markdown("## Next Steps")
 
 st.markdown("""
-Now that you understand the business problem and the approach, you can:
-
-1. **Run the Optimizer** - Configure constraints and see optimal customer-action assignments
-2. **Explore Sensitivity Analysis** - Understand how budget affects ROI and coverage
-3. **Export Treatment Plans** - Download customer lists for immediate execution
+Use the interactive dashboard to:
+- Configure budget and operational constraints
+- Run optimization scenarios
+- View detailed treatment plans and ROI projections
+- Export customer lists for execution
+- Analyze budget sensitivity and diminishing returns
 """)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    if st.button("🎯 Launch Optimization Dashboard", type="primary", use_container_width=True):
+    if st.button("Launch Optimization Dashboard", type="primary", use_container_width=True):
         st.switch_page("pages/2_Optimizer.py")
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -417,25 +323,25 @@ st.markdown("<br>", unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("📊 View Budget Sensitivity Analysis", use_container_width=True):
+    if st.button("View Budget Sensitivity Analysis", use_container_width=True):
         st.switch_page("pages/3_Sensitivity_Analysis.py")
 
 with col2:
-    if st.button("📄 Read Full Technical Report", use_container_width=True):
+    if st.button("Read Full Technical Report", use_container_width=True):
         st.markdown("[Download PDF Report](prescriptive_analysis_report.pdf)")
 
 st.markdown("---")
 
 # Footer
 st.markdown("""
-<div style='text-align: center; color: #666; padding: 2rem 0;'>
+<div style='text-align: center; color: #7f8c8d; padding: 2rem 0;'>
     <p><strong>PlaylistPro Retention Optimizer</strong></p>
-    <p>Combining Predictive Analytics with Prescriptive Optimization</p>
+    <p>Predictive Analytics + Prescriptive Optimization</p>
     <p style='font-size: 0.9rem; margin-top: 1rem;'>
-        Built with Streamlit • Python • XGBoost • Gurobi
+        Streamlit | Python | XGBoost | Gurobi
     </p>
-    <p style='font-size: 0.8rem; color: #999; margin-top: 1rem;'>
-        © 2025 PlaylistPro Analytics Team • Satkar Karki
+    <p style='font-size: 0.85rem; color: #95a5a6; margin-top: 1rem;'>
+        © 2025 PlaylistPro Analytics Team | Satkar Karki
     </p>
 </div>
 """, unsafe_allow_html=True)
