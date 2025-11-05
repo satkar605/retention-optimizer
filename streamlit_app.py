@@ -159,35 +159,38 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("💰 Budget & Capacity")
     
-    # Budget slider (realistic for 250 customers generating ~$2.5K/month)
+    # Use dataset size to set realistic upper bounds
+    _N = len(st.session_state.merged_data) if st.session_state.data_loaded and st.session_state.merged_data is not None else 250
+    
+    # Budget slider — start at $150 (below is often infeasible), allow up to $1,000 for demo
     budget = st.slider(
         "Weekly Budget ($)",
-        min_value=50,
-        max_value=500,
+        min_value=150,
+        max_value=1000,
         value=150,
         step=25,
         format="$%d",
-        help="10-20% of monthly revenue (~$250-500/mo = $60-125/wk) is typical for retention"
+        help="Realistic weekly budget range for demo scale. Values below $150 are typically infeasible."
     )
     
-    # Email capacity (realistic for 250 customers)
+    # Email capacity — minimum 60, cap at dataset size
     email_cap = st.slider(
         "Email Capacity (per week)",
-        min_value=50,
-        max_value=250,
-        value=120,
+        min_value=60,
+        max_value=int(_N),
+        value=min(120, int(_N)),
         step=10,
-        help="Maximum retention emails per week (about 50% of customer base)"
+        help="Maximum retention emails per week (capped at total customers)."
     )
     
-    # In-app/Push notification capacity (replaces unrealistic calls)
+    # In-app/Push notification capacity — allow from 50 up to dataset size
     push_cap = st.slider(
         "In-App/Push Notification Capacity",
         min_value=50,
-        max_value=250,
-        value=100,
+        max_value=int(_N),
+        value=min(100, int(_N)),
         step=10,
-        help="In-app messages and push notifications (realistic for music streaming app)"
+        help="In-app messages and push notifications (capped at total customers)."
     )
     
     st.markdown("---")
@@ -203,34 +206,34 @@ with st.sidebar:
         help="Minimum percentage of high-risk customers to treat"
     ) / 100.0
     
-    # Premium coverage (optional)
+    # Premium coverage — cannot be zero in our policy; set minimum 10%
     min_premium = st.slider(
         "Min Premium Customer Coverage (%)",
-        min_value=0,
+        min_value=10,
         max_value=80,
         value=40,
         step=5,
-        help="Minimum percentage of Premium customers to treat"
+        help="Minimum percentage of Premium customers to treat (>= 10%)."
     ) / 100.0
     
-    # Action Saturation Cap
+    # Action Saturation Cap — keep realistic band to avoid homogeneous campaigns
     max_action_pct = st.slider(
         "Max Action Saturation (%)",
-        min_value=20,
-        max_value=100,
+        min_value=30,
+        max_value=80,
         value=50,
         step=5,
-        help="No single action can be used for more than X% of customers"
+        help="No single action can be used for more than X% of customers (30–80%)."
     ) / 100.0
     
-    # Fairness Coverage Floor
+    # Fairness Coverage Floor — enforce a positive minimum (>= 10%)
     min_segment_coverage = st.slider(
         "Min Segment Coverage (%)",
-        min_value=0,
+        min_value=10,
         max_value=40,
         value=15,
         step=5,
-        help="Each subscription segment must receive at least X% coverage"
+        help="Each subscription segment must receive at least X% coverage (>= 10%)."
     ) / 100.0
     
     st.markdown("---")
