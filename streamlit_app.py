@@ -31,10 +31,10 @@ st.markdown("""
         margin-bottom: 3rem;
     }
     .problem-box {
-        background-color: #fff5f5;
+        background-color: #f8f9fa;
         padding: 2rem;
         border-radius: 8px;
-        border-left: 4px solid #c0392b;
+        border-left: 4px solid #e74c3c;
         margin: 2rem 0;
     }
     .solution-box {
@@ -75,11 +75,8 @@ st.markdown("---")
 st.markdown("## Business Context")
 
 st.markdown("""
-PlaylistPro is a music streaming service with **75,000 subscribers** across four subscription tiers: 
-Premium, Free, Family, and Student. Like many subscription-based businesses, PlaylistPro faces a critical challenge: **customer churn**.
-
-Every month, customers cancel their subscriptions for various reasons—better offers from competitors, 
-dissatisfaction with the service, or simply losing interest. The financial impact is devastating.
+PlaylistPro, a music streaming service with **75,000 subscribers**, faces a critical challenge: 
+**47% annual churn rate** resulting in millions in lost recurring revenue.
 """)
 
 # Problem Scale - Metric Cards
@@ -126,18 +123,16 @@ st.markdown("""
 <div class="problem-box">
     <h3>The Problem</h3>
     <p style="font-size: 1.05rem; line-height: 1.7;">
-    Before this project, PlaylistPro had <strong>no systematic approach</strong> to customer retention:
+    PlaylistPro had <strong>no systematic retention strategy</strong>:
     </p>
     <ul style="font-size: 1.05rem; line-height: 1.7;">
         <li>No predictive analytics to identify high-risk customers</li>
         <li>Manual, intuition-based targeting decisions</li>
-        <li>Inefficient budget allocation across customer segments</li>
-        <li>No optimization framework for resource allocation</li>
+        <li>Inefficient budget allocation</li>
         <li>Unclear ROI on retention campaigns</li>
-        <li>Uncoordinated operational capacity (email, calls, discounts)</li>
     </ul>
-    <p style="font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; color: #c0392b;">
-    Result: Millions in lost recurring revenue annually with no clear improvement path.
+    <p style="font-size: 1.05rem; font-weight: 600; margin-top: 1rem; color: #e74c3c;">
+    Result: Millions in lost recurring revenue annually.
     </p>
 </div>
 """, unsafe_allow_html=True)
