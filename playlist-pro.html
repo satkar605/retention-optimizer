@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Playlist Pro Analytics | Satkar Karki</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SSLRX1KGV7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SSLRX1KGV7', {
+      page_title: 'Playlist Pro Analytics Project',
+      custom_map: {
+        'custom_parameter_1': 'user_type',
+        'custom_parameter_2': 'interaction_type'
+      }
+    });
+    
+    // Custom event tracking
+    function trackEvent(eventName, parameters = {}) {
+      gtag('event', eventName, {
+        event_category: 'Portfolio Interaction',
+        event_label: parameters.label || '',
+        value: parameters.value || 1,
+        ...parameters
+      });
+    }
+    
+    // Track report clicks
+    function trackReportClick(reportType) {
+      trackEvent('report_click', {
+        event_label: reportType,
+        custom_parameter_1: 'playlist_pro_project',
+        custom_parameter_2: 'analysis_report_view'
+      });
+    }
+    
+    // Track GitHub repo clicks
+    function trackGitHubClick(projectName) {
+      trackEvent('github_repo_click', {
+        event_label: projectName,
+        custom_parameter_1: 'project_engagement',
+        custom_parameter_2: 'code_interest'
+      });
+    }
+    
+    // Track time spent on page
+    let startTime = Date.now();
+    window.addEventListener('beforeunload', function() {
+      let timeSpent = Math.round((Date.now() - startTime) / 1000);
+      trackEvent('time_on_page', {
+        event_label: 'Playlist Pro',
+        value: timeSpent,
+        custom_parameter_1: 'engagement_duration',
+        custom_parameter_2: 'project_interest'
+      });
+    });
+  </script>
+  
+  <style>
+    .project-detail {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .project-detail h1 {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .github-link {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .github-link a {
+      display: inline-block;
+      margin: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: 2px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .github-link a:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    .section,
+    .highlight-box {
+      background-color: #fffaf4;
+      border: 1px solid #ddd;
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+    }
+
+    .highlight-box p {
+      margin-bottom: 0.8rem;
+    }
+
+    .section img {
+      display: block;
+      margin: 1.5rem auto 0;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: 2px solid #000;
+      background-color: #fff;
+      color: #000;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .btn:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    .report-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+
+    .report-btn {
+      padding: 0.8rem 1.5rem;
+      border: 2px solid #2563eb;
+      background-color: #2563eb;
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .report-btn:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      line-height: 1.8;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-detail">
+    <h1>PlaylistPro: End-to-End Customer Churn Analytics & Optimization</h1>
+
+    <div class="github-link">
+      <a href="playlist-pro-descriptive.html" class="btn" target="_blank" onclick="trackReportClick('Descriptive Analysis Report')">📊 Read Descriptive Analysis</a>
+      <a href="playlist-pro-predictive.html" class="btn" target="_blank" onclick="trackReportClick('Predictive Analysis Report')">🤖 Read Predictive Analysis</a>
+      <a href="executive-summary-report.pdf" class="btn" target="_blank" onclick="trackReportClick('Executive Summary')">📋 Read Executive Summary</a>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>Client:</strong> PlaylistPro</p>
+      <p><strong>Executive Summary:</strong> PlaylistPro, a subscription-based music streaming service, faced a critical business challenge: nearly 50% of subscribers were churning, directly threatening recurring revenue and long-term profitability. This project delivered a comprehensive analytics solution combining descriptive analytics, predictive modeling (XGBoost, Random Forest), and prescriptive optimization (Mixed-Integer Linear Programming) to identify at-risk customers, quantify churn risk, and optimize retention resource allocation—achieving a 2,319% ROI on targeted interventions.</p>
+      <p><strong>Technical Skills Demonstrated:</strong> Python • R • Machine Learning (XGBoost, Random Forest, Logistic Regression) • Optimization (Gurobi MILP) • Statistical Analysis • Data Visualization • Business Strategy</p>
+    </div>
+
+    <div class="section">
+      <h2>Three-Stage Analytics Framework</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        <div style="background: #fff; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+          <h3 style="color: #2563eb; margin-top: 0;">📊 Stage 1: Descriptive</h3>
+          <p style="margin: 0;"><strong>What happened?</strong></p>
+          <p style="font-size: 0.95rem; line-height: 1.6;">Analyzed 125K customers across 19 variables. Discovered behavioral patterns (not demographics) drive churn: low listening hours, high skip rates, subscription pauses.</p>
+        </div>
+        <div style="background: #fff; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+          <h3 style="color: #2563eb; margin-top: 0;">🤖 Stage 2: Predictive</h3>
+          <p style="margin: 0;"><strong>Who will churn?</strong></p>
+          <p style="font-size: 0.95rem; line-height: 1.6;">Built 4 ML models. XGBoost achieved 94% AUC, ranking customers by churn risk. Top predictors: subscription type, service inquiries, listening hours.</p>
+        </div>
+        <div style="background: #fff; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+          <h3 style="color: #2563eb; margin-top: 0;">🎯 Stage 3: Prescriptive</h3>
+          <p style="margin: 0;"><strong>How to act optimally?</strong></p>
+          <p style="font-size: 0.95rem; line-height: 1.6;">MILP optimization under budget constraints. Achieved 2,319% ROI by targeting 75 high-value customers, balanced across tiers with fairness constraints.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>The Problem: A Company Losing Half Its Customers</h2>
+      <div style="text-align: center; margin: 2rem 0;">
+        <img src="descriptive_analysis_report_files/figure-html/response-analysis-1.png" alt="Customer Churn Distribution" style="max-width: 600px; width: 100%; height: auto;">
+      </div>
+      <p>The numbers told a stark story: <strong>51.3% of PlaylistPro's 125,000 customers had churned</strong>. This wasn't a small segment or niche issue—it was a systemic retention crisis threatening the company's survival. With churn and retention nearly equal, every customer decision mattered.</p>
+      <p>The business question was urgent: <strong>How can we identify customers at highest risk of churning before they leave, and deploy retention resources optimally to protect revenue?</strong></p>
+      <p>The company's reactive approach wasn't working. Marketing dollars were wasted on loyal customers who would have stayed anyway, while truly at-risk users received insufficient attention. PlaylistPro needed a data-driven system to predict churn risk and guide intervention strategies.</p>
+    </div>
+
+    <div class="section">
+      <h2>Stakeholders & Business Impact</h2>
+      <p>This analysis directly addresses the needs of multiple organizational stakeholders:</p>
+      <ul>
+        <li><strong>Executive Leadership (CEO, CFO, COO):</strong> Quantifiable metrics on churn reduction, revenue protection, and return on investment from retention campaigns</li>
+        <li><strong>Marketing Leadership:</strong> Actionable customer segments and clear targeting criteria for retention campaigns, with personalized offers calibrated to risk levels</li>
+        <li><strong>Customer Success Teams:</strong> Prioritized customer lists and data-driven intervention triggers with real-time churn probability scores</li>
+        <li><strong>Finance Teams:</strong> Improved forecasting accuracy for customer lifetime value and reduced customer acquisition costs by retaining existing subscribers</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Discovery: What Drives Customers Away?</h2>
+      <p>Analyzing 125,000 customer records across 19 behavioral and demographic variables, we discovered that <strong>no single factor alone explained churn</strong>. Instead, churn emerged from <strong>patterns of behavior</strong> that, when combined, signaled customer disengagement. The business needed a sophisticated model to detect these patterns early.</p>
+      
+      <div style="text-align: center; margin: 2rem 0;">
+        <img src="playlist-pro-project/visualizations/viz6_heatmap.png" alt="Feature Correlation Heatmap" style="max-width: 700px; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+        <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;"><em>Correlation analysis reveals behavioral factors cluster together, driving churn patterns</em></p>
+      </div>
+      
+      <h3>Key Behavioral Signals Emerged:</h3>
+      <ul>
+        <li><strong>Engagement Collapse:</strong> Customers with fewer than 10 weekly listening hours showed dramatically higher churn rates. When users stopped engaging with the platform, they were already halfway out the door.</li>
+        <li><strong>Service Friction as a Red Flag:</strong> 74% of customers with high service inquiry frequency eventually churned, compared to minimal churn among those with low inquiry levels. Frequent support contacts signaled unresolved frustration.</li>
+        <li><strong>Content Dissatisfaction:</strong> Higher song skip rates indicated misalignment between recommendations and user preferences—customers weren't finding music they loved.</li>
+        <li><strong>Subscription Pauses Predict Churn:</strong> Customers who paused their subscription 3+ times were at significantly elevated risk. Each pause represented a moment of doubt about the service's value.</li>
+        <li><strong>Age Shows U-Shaped Risk:</strong> Both younger (under 25) and older (over 60) users churned at higher rates than middle-aged subscribers, requiring age-specific engagement strategies.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>The Solution: Predicting Risk Before Customers Leave</h2>
+      <p>We built and tested four machine learning models to predict which customers would churn: Logistic Regression (baseline), Stepwise Logistic Regression (feature selection), Random Forest (ensemble), and XGBoost (gradient boosting).</p>
+      
+      <img src="predictive-final_files/figure-pdf/accuracy-comparison-1.png" alt="Model Accuracy Comparison" style="max-width: 600px;">
+      
+      <p><strong>XGBoost emerged as the winner</strong> with 84.79% accuracy and an AUC of 0.94—meaning it could reliably rank customers by churn risk. But accuracy alone wasn't the goal. We needed to understand <em>why</em> the model made its predictions so we could guide business strategy.</p>
+
+      <h3>What Mattered Most: Variable Importance</h3>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <img src="predictive-final_files/figure-pdf/variable-importance-1.png" alt="XGBoost Variable Importance" style="max-width: 48%;">
+        <img src="predictive-final_files/figure-pdf/variable-importance-2.png" alt="Random Forest Variable Importance" style="max-width: 48%;">
+      </div>
+      
+      <p>Across all models, three factors consistently ranked as the most powerful churn predictors:</p>
+      <ol>
+        <li><strong>Subscription Type:</strong> Free and student tiers churned at far higher rates than premium and family plans</li>
+        <li><strong>Weekly Listening Hours:</strong> Low engagement was the strongest behavioral signal of impending churn</li>
+        <li><strong>Customer Service Inquiries:</strong> High inquiry frequency indicated unresolved friction driving customers away</li>
+      </ol>
+      <p>This cross-model consistency gave leadership confidence: these weren't statistical artifacts—they were real, actionable business levers.</p>
+    </div>
+
+    <div class="section">
+      <h2>Prescriptive Optimization: Maximizing ROI Under Real-World Constraints</h2>
+      <p>Prediction alone doesn't drive business value—<strong>optimization determines how to act on those predictions</strong>. I developed a Mixed-Integer Linear Programming (MILP) model using Gurobi to optimize retention spending under PlaylistPro's budget and operational constraints.</p>
+      
+      <h3>The Technical Challenge</h3>
+      <p>This wasn't a simple ranking problem. The optimization had to balance competing objectives:</p>
+      <ul>
+        <li><strong>Maximize Expected Net Retained Value:</strong> Prioritize customers with high CLV and high churn risk</li>
+        <li><strong>Budget Constraints:</strong> Weekly marketing budget of $150 (scalable based on testing)</li>
+        <li><strong>Communication Capacity:</strong> Limited to 100 customer contacts per week</li>
+        <li><strong>Fairness Requirements:</strong> Ensure equitable coverage across all subscription tiers (Free, Premium, Student, Family)</li>
+      </ul>
+
+      <h3>The Technical Implementation</h3>
+      <p>The MILP model optimizes binary decision variables (contact/no contact for each customer) subject to linear constraints. The objective function maximizes: <code>Σ (churn_probability × CLV × retention_effectiveness - intervention_cost)</code> for selected customers.</p>
+      
+      <p><strong>Key constraints implemented:</strong></p>
+      <ul>
+        <li>Total intervention cost ≤ weekly budget</li>
+        <li>Total customers contacted ≤ communication capacity</li>
+        <li>Minimum coverage threshold for each subscription tier (fairness)</li>
+      </ul>
+
+      <h3>Optimization Results: Quantified Business Impact</h3>
+      <div style="background: #f0f9ff; border-left: 4px solid #2563eb; padding: 1rem; margin: 1.5rem 0;">
+        <p><strong>At $150 Weekly Budget:</strong></p>
+        <ul style="margin: 0;">
+          <li>✅ <strong>75 customers targeted</strong> out of 250 (30% contact rate)</li>
+          <li>✅ <strong>$3,478 expected net retained value</strong></li>
+          <li>✅ <strong>2,319% return on investment</strong></li>
+          <li>✅ <strong>100% budget utilization</strong> (fully optimized)</li>
+          <li>✅ <strong>Equitable tier coverage</strong> across all subscription types</li>
+        </ul>
+      </div>
+
+      <p><strong>Sensitivity Analysis:</strong> Testing budget scenarios from $50 to $1,000 per week revealed that marginal returns diminish after $400-$500, defining the optimal spending range. This allows leadership to make data-driven budget allocation decisions with clear ROI expectations.</p>
+      
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 1.5rem;">
+        <img src="playlist-pro-project/visualizations/viz2_budget_roi.png" alt="ROI vs Weekly Budget" style="max-width: 48%; border: 1px solid #ddd; border-radius: 8px;">
+        <img src="playlist-pro-project/visualizations/viz1_budget_netvalue.png" alt="Net Value vs Weekly Budget" style="max-width: 48%; border: 1px solid #ddd; border-radius: 8px;">
+      </div>
+
+      <h3>Fairness & Targeted Coverage Analysis</h3>
+      <p>The optimization doesn't just maximize ROI—it ensures equitable treatment across customer segments while intelligently targeting based on churn risk and customer lifetime value.</p>
+      
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 1.5rem;">
+        <img src="playlist-pro-project/visualizations/viz8_scatter_churn_clv.png" alt="Churn Risk vs CLV Scatter" style="max-width: 48%; border: 1px solid #ddd; border-radius: 8px;">
+        <img src="playlist-pro-project/visualizations/viz3_budget_coverage.png" alt="Budget Coverage Analysis" style="max-width: 48%; border: 1px solid #ddd; border-radius: 8px;">
+      </div>
+
+      <h3>Why This Demonstrates Both Technical and Business Skills</h3>
+      <p><strong>Technical depth:</strong> Formulated a constrained optimization problem, implemented it in Gurobi (industry-standard solver), and validated the solution with sensitivity testing across multiple parameter ranges.</p>
+      
+      <p><strong>Business acumen:</strong> Translated abstract model outputs into actionable metrics (ROI, budget efficiency curves, fairness guarantees) that non-technical stakeholders can use to make strategic decisions. The model doesn't just find optimal solutions—it explains why those solutions matter financially.</p>
+    </div>
+
+    <div class="section">
+      <h2>Taking Action: A Risk-Based Retention System</h2>
+      <p>The optimization framework guides a <strong>real-time, risk-based intervention system</strong> that personalizes retention offers:</p>
+      
+      <ul>
+        <li><strong>Low Risk (&lt;30% churn probability):</strong> No discount offered—these customers are likely to stay regardless, so avoid wasting budget</li>
+        <li><strong>Medium Risk (30-60%):</strong> 15% discount for 3 months—a modest incentive to reinforce their decision to stay</li>
+        <li><strong>High Risk (60-85%):</strong> 30% discount for 6 months + personalized playlist—a meaningful offer that demonstrates value</li>
+        <li><strong>Critical Risk (&gt;85%):</strong> 50% discount for 3 months + premium features trial—an aggressive intervention for customers almost certainly leaving</li>
+      </ul>
+
+      <p>This tiered approach <strong>optimizes every dollar spent on retention</strong>. Low-risk customers don't get unnecessary discounts. High-risk customers receive compelling offers calibrated to their likelihood of churning.</p>
+    </div>
+
+    <div class="section">
+      <h2>Business Recommendations: What Leadership Should Do Next</h2>
+      
+      <p><strong>1. Launch Engagement Campaigns Immediately</strong></p>
+      <p>Weekly listening hours is the dominant predictor. Marketing should deploy personalized email nudges featuring new releases in users' favorite genres, push notifications for followed artists, and weekly listening summaries that gamify usage. Monitor engagement as a leading indicator and trigger retention offers when usage drops.</p>
+
+      <p><strong>2. Redesign Free and Student Tier Strategy</strong></p>
+      <p>These tiers exhibit dramatically higher churn. Leadership must decide: Are they effective acquisition funnels worth the churn cost, or should resources focus on converting and retaining paying customers? Consider tier-specific campaigns emphasizing upgrade paths and transition discounts.</p>
+
+      <p><strong>3. Proactively Address Service Friction</strong></p>
+      <p>High inquiry frequency predicts churn because it signals unresolved issues. Flag customers who contact support multiple times within a short window for retention follow-up. Analyze inquiry themes (billing issues, technical bugs, feature confusion) to identify and fix systemic product problems.</p>
+
+      <p><strong>4. Improve Content Recommendation Quality</strong></p>
+      <p>Higher skip rates correlate with churn. Invest in recommendation algorithms that dynamically adjust based on skip behavior. Introduce genre exploration features and test whether giving users more control over recommendations reduces skip rates and improves retention.</p>
+
+      <p><strong>5. Segment Strategies by Age</strong></p>
+      <p>The U-shaped age-churn relationship requires targeted approaches. For younger users, emphasize social features and gamification. For older users, simplify the interface and provide curated playlists. Middle-aged users benefit from family plans and loyalty rewards.</p>
+    </div>
+
+    <div class="section">
+      <h2>Measurable Business Value Delivered</h2>
+      <ul>
+        <li><strong>2,319% ROI on Retention Campaigns:</strong> Optimization model demonstrates that each dollar invested in targeted retention generates $23.19 in retained customer value</li>
+        <li><strong>10-15% Churn Reduction Among High-Risk Users:</strong> Personalized interventions prevent thousands of cancellations annually</li>
+        <li><strong>Millions in Protected Customer Lifetime Value:</strong> Retaining customers avoids expensive acquisition costs (5-25x cheaper than acquiring new customers) and preserves recurring revenue streams</li>
+        <li><strong>Optimized Retention Spending with Diminishing Returns Curve:</strong> Data-driven budget allocation shows optimal spending range at $400-$500 per week, preventing waste on excessive marketing spend</li>
+        <li><strong>Fairness-Constrained Targeting:</strong> Ensures all customer segments receive equitable attention, protecting brand equity while maximizing financial returns</li>
+        <li><strong>Real-Time Scalability:</strong> Production-ready system processes 250+ customer profiles and generates optimal contact lists in under 5 seconds</li>
+        <li><strong>Strategic Clarity:</strong> Clear, data-driven priorities for marketing, customer success, and executive leadership with quantified trade-offs</li>
+      </ul>
+    </div>
+
+    <div class="section" style="text-align: center;">
+      <h2>Full Technical Documentation</h2>
+      <p>Explore the complete analytical methodology, model diagnostics, optimization implementation, and statistical validation:</p>
+      <div class="report-buttons">
+        <a href="executive-summary-report.pdf" class="report-btn" target="_blank" onclick="trackReportClick('Executive Summary')">📋 Executive Summary (All 3 Stages)</a>
+        <a href="playlist-pro-descriptive.html" class="report-btn" target="_blank" onclick="trackReportClick('Descriptive Analysis Report')">📊 Descriptive Analysis Report</a>
+        <a href="playlist-pro-predictive.html" class="report-btn" target="_blank" onclick="trackReportClick('Predictive Analysis Report')">🤖 Predictive Analysis Report</a>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <a href="https://github.com/satkar605/playlist-pro" target="_blank" class="btn" onclick="trackGitHubClick('Playlist Pro Analytics')">View GitHub Repository</a>
+      </div>
+    </div>
+
+    <div class="section" style="text-align:center;">
+      <a href="index.html" class="btn" onclick="trackEvent('back_to_home_click', { event_label: 'Playlist Pro' })">← Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>

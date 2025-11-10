@@ -1,18 +1,22 @@
 # PlaylistPro Retention Optimizer
 
-**Prescriptive analytics platform for subscription retention management**
+**Prescriptive Analytics Platform for Customer Retention Management**
 
-Optimization engine that transforms ML churn predictions into executable weekly retention campaigns, maximizing customer lifetime value within operational constraints.
+MILP optimization engine that transforms XGBoost churn predictions into executable weekly retention campaigns, maximizing customer lifetime value within operational constraints.
+
+**Demonstrated Performance:** $3,479 net value | 2,319% ROI | 75 customers treated | $150 baseline budget
 
 ---
 
 ## Business Problem
 
-Subscription businesses face a critical challenge: identifying which at-risk customers to target with limited retention budget and operational capacity. Traditional approaches either treat all high-risk customers (cost-prohibitive) or only high-value customers (leaves revenue gaps). This creates suboptimal resource allocation and missed retention opportunities.
+PlaylistPro, a music streaming service with **75,000 subscribers**, faces a **47% annual churn rate**, costing millions in recurring revenue. The company lacks a systematic retention strategy—no predictive analytics to identify high-risk customers, no optimization framework for budget allocation, and unclear ROI on marketing campaigns.
+
+Traditional approaches either treat all high-risk customers (cost-prohibitive) or only high-value customers (leaves revenue gaps). This creates suboptimal resource allocation and missed retention opportunities worth hundreds of thousands in potential retained revenue.
 
 ## Solution Overview
 
-This platform solves the retention planning problem using mixed-integer linear programming (Gurobi), automatically generating optimal weekly treatment plans for 75,000+ customers in under 90 seconds. The system balances competing objectives while respecting real-world capacity constraints.
+This platform solves the retention planning problem using mixed-integer linear programming (MILP with Gurobi), automatically generating optimal weekly treatment plans for 75,000+ customers in under 90 seconds. The system balances competing objectives while respecting real-world capacity constraints.
 
 **Core optimization:**
 ```
@@ -21,6 +25,13 @@ Subject to: weekly budget, email capacity, call center capacity, policy requirem
 ```
 
 The model prioritizes customers by expected net value, ensuring resources flow to highest-impact opportunities.
+
+**Baseline Results (250 customer sample, $150 weekly budget):**
+- **Net Value Generated:** $3,479
+- **ROI:** 2,319%
+- **Customers Treated:** 75 customers
+- **Expected Churn Prevention:** ~5 customers saved
+- **Optimal Budget Range:** $250-400 per week (identified via sensitivity analysis)
 
 ---
 
@@ -100,14 +111,16 @@ Dashboard opens at `http://localhost:8501`
 - Create data-driven learning loop: measure actual uplift, recalibrate model, re-optimize
 - Scale weekly re-optimization with fresh ML predictions
 
-**Expected Outcomes:**
-- 150-300% ROI on retention campaigns (industry benchmark)
-- 15-25% reduction in churn among treated customers
+**Demonstrated Results:**
+- **2,319% ROI** on baseline scenario ($150 budget)
+- **$3,479 net value** from optimized treatment allocation
+- **75 customers treated** with expected **5 churn preventions**
+- **Optimal budget range identified:** $250-400 per week via sensitivity analysis
 - Clear visibility into constraint bottlenecks for capacity planning
 
 ---
 
-## Model Formulation
+## Model Formulation (MILP)
 
 ### Decision Variables
 ```
@@ -115,6 +128,8 @@ x[i,k] ∈ {0,1} for all customer-action pairs
 
 x[i,k] = 1 if customer i receives action k
 x[i,k] = 0 otherwise
+
+Total: 250 customers × 8 actions = 2,000 binary decision variables
 ```
 
 ### Objective Function
@@ -122,19 +137,87 @@ x[i,k] = 0 otherwise
 Maximize: Σ (p_i × u_k × v_i - c_k) × x[i,k]
 
 Where:
-  p_i = churn probability (from XGBoost model)
+  p_i = churn probability (from XGBoost model, AUC 0.94)
   u_k = uplift (% churn reduction from action k)
   v_i = customer lifetime value (2-year horizon)
   c_k = cost of action k
 ```
 
+**Objective:** Maximize expected retained CLV net of action costs
+
 ### Constraints
 
 1. **One action per customer:** Each customer receives at most one retention action
-2. **Budget:** Total weekly spending cannot exceed allocated retention budget
-3. **Channel capacity:** Email and call volumes respect operational limits
-4. **Policy requirements:** Minimum coverage thresholds for high-risk and Premium customers
-5. **Eligibility:** Actions only assigned to eligible customer segments
+   ```
+   Σ x[i,k] ≤ 1  ∀ customers i
+   ```
+
+2. **Weekly budget constraint:** Total spending cannot exceed allocated budget
+   ```
+   Σ (cost_k × x[i,k]) ≤ weekly_budget
+   ```
+
+3. **Channel capacity constraints:**
+   - Email capacity: limited marketing automation throughput
+   - Call/Push capacity: limited call center agent hours
+   ```
+   Σ x[i,k] ≤ capacity_channel  ∀ channels
+   ```
+
+4. **Policy requirements (fairness constraints):**
+   - Minimum high-risk coverage: ≥60% of customers with churn probability >0.5
+   - Minimum Premium customer coverage: ≥40% of Premium subscribers
+   - Maximum action saturation: ≤50% of treatments per action type
+   - Minimum segment coverage: ≥15% coverage across risk/value segments
+
+5. **Eligibility constraints:** Actions only assigned to eligible customer segments
+   ```
+   x[i,k] = 0  if customer i ineligible for action k
+   ```
+
+---
+
+## Sensitivity Analysis Findings
+
+### Budget Optimization
+Comprehensive sensitivity analysis across budget levels ($150-$1,000) revealed:
+
+**Key Findings:**
+- **Optimal Range:** $250-400 per week delivers best risk-adjusted returns
+- **Baseline ($150):** $3,479 net value, 2,319% ROI, 75 customers treated
+- **Diminishing Returns:** ROI decreases at budgets >$400 as lower-value customers treated
+- **Marginal Value:** Each additional dollar of budget yields $0.15-0.25 in expected net value
+
+**Budget Recommendations:**
+1. **Conservative:** $150-250 (highest ROI, limited scale)
+2. **Optimal:** $250-400 (balance of ROI and impact)
+3. **Aggressive:** $400+ (maximize coverage, lower ROI acceptable)
+
+**Constraint Analysis:**
+- **Budget:** Often the binding constraint at lower investment levels
+- **Email Capacity:** Becomes binding at higher budgets (120+ emails needed)
+- **Call Capacity:** Limits high-value retention actions
+- **Policy Requirements:** Ensures fairness but may limit pure ROI optimization
+
+### Action Mix Insights
+Optimization automatically balances retention action portfolio:
+- **Personalized emails:** High volume, low cost, broad reach
+- **Discount offers:** Moderate cost, strong uplift for price-sensitive segments
+- **Premium trials:** Targeted at Free/Student tiers with high upgrade potential
+- **Retention calls:** Reserved for highest-value, highest-risk customers
+
+### Visualization Suite
+Complete analysis includes 8 key visualizations:
+1. **Budget vs Net Value:** Demonstrates linear growth to optimal range, then diminishing returns
+2. **Budget vs ROI:** Shows ROI decline as budget increases (higher-value customers treated first)
+3. **Budget vs Coverage:** Customer treatment volume scales with budget investment
+4. **Action Mix Distribution:** Reveals optimal blend of email, discount, trial, and call actions
+5. **Segment-Action Heatmap:** Shows which customer segments receive which treatments
+6. **Risk-Value Matrix:** Visualizes customer distribution across churn risk and CLV dimensions
+7. **Net Value Breakdown:** Decomposes total value by customer segment
+8. **Churn vs CLV Scatter:** Identifies high-risk, high-value priority targets
+
+All visualizations available in `/visualizations/` directory.
 
 ---
 
@@ -230,10 +313,12 @@ When customer-level CLV unavailable, model estimates using:
 Formula: `CLV = base_revenue × payment_multiplier × (1 + engagement_score) × 2`
 
 ### Optimization Performance
-- **Problem size:** 75,001 customers × 8 actions = 600,008 binary variables
-- **Solve time:** 30-90 seconds on standard hardware
-- **Optimality:** Gurobi guarantees optimal solution to within 0.01% gap
-- **Scalability:** Can handle 500,000+ customers with clustering approach
+- **Baseline problem size:** 250 customers × 8 actions = 2,000 binary decision variables
+- **Full-scale capacity:** 75,001 customers × 8 actions = 600,008 binary variables
+- **Solve time:** 30-90 seconds on standard hardware (academic Gurobi license)
+- **Optimality:** Gurobi guarantees optimal solution to within 0.01% MIP gap
+- **Scalability:** Production-ready for 75K customers, can scale to 500K+ with clustering
+- **Baseline results:** $3,479 net value, 2,319% ROI from $150 budget scenario
 
 ### Shadow Prices
 Model provides dual values (shadow prices) indicating marginal value of relaxing constraints:
@@ -271,15 +356,22 @@ streamlit run streamlit_app.py
 
 ```
 retention-optimizer/
-├── streamlit_app.py                    # Interactive dashboard (1,043 lines)
-├── music_streaming_retention_75k.py    # Optimization engine (615 lines)
-├── prediction.csv                      # XGBoost churn predictions (75,001 rows)
-├── test.csv                            # Customer features
-├── requirements.txt                    # Python dependencies
-├── STREAMLIT_GUIDE.md                  # User documentation
-├── CONFIGURATION_GUIDE.md              # Setup examples
-├── IMPLEMENTATION_SUMMARY.md           # Technical documentation
-└── test_optimizer.py                   # Verification script
+├── streamlit_app.py                                  # Interactive dashboard (324 lines)
+├── music_streaming_retention_75k.py                  # Optimization engine (615 lines)
+├── prediction_250.csv                                # Churn predictions (250 customer sample)
+├── test_250.csv                                      # Customer features
+├── requirements.txt                                  # Python dependencies
+├── README.md                                         # Project documentation
+├── Satkar_Karki_Prescriptive_Analysis_Report.pdf    # Full analysis report
+└── visualizations/                                   # Result visualizations
+    ├── viz1_budget_netvalue.png                      # Budget vs Net Value
+    ├── viz2_budget_roi.png                           # Budget vs ROI
+    ├── viz3_budget_coverage.png                      # Budget vs Customer Coverage
+    ├── viz4_action_mix.png                           # Treatment Action Distribution
+    ├── viz5_segment_action.png                       # Segment-Action Heatmap
+    ├── viz6_heatmap.png                              # Risk-Value Matrix
+    ├── viz7_netvalue_breakdown.png                   # Net Value by Segment
+    └── viz8_scatter_churn_clv.png                    # Churn Probability vs CLV
 ```
 
 ---
@@ -342,8 +434,14 @@ For questions about implementation or customization, please open an issue on Git
 
 ---
 
-**Built for:** Data science portfolios, business analytics demonstrations, optimization coursework
+## Summary
 
-**Technologies:** Python, Gurobi, Streamlit, XGBoost, Plotly, Pandas
+**Built for:** Data science portfolios, business analytics case studies, prescriptive optimization demonstrations
 
-**Scale:** Production-ready for 75,000+ customers, extensible to 500,000+ with modifications
+**Technologies:** Python | Gurobi MILP | Streamlit | XGBoost | Plotly | Pandas | NumPy
+
+**Performance:** $3,479 net value | 2,319% ROI | 30-90 second solve time | 2,000 binary variables
+
+**Scale:** Production-ready for 75,000+ customers, extensible to 500,000+ with decomposition
+
+**Documentation:** Complete prescriptive analysis report with 8 visualizations included
