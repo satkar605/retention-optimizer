@@ -49,44 +49,53 @@ st.markdown("---")
 
 # Business Context Section
 st.markdown("""
-### 🎯 The Business Problem
+### The Business Problem
 
-PlaylistPro, a music streaming service with **75,000 subscribers**, was facing a critical retention crisis:
-
-- **47% annual churn rate** — losing nearly half of all customers every year
-- **Millions in lost recurring revenue** from customer attrition
-- **No systematic retention strategy** to combat churn
-
-#### Key Gaps
-- ❌ No predictive analytics to identify high-risk customers before they churned
-- ❌ No optimization framework for allocating limited marketing budgets
-- ❌ No clear ROI measurement on retention campaigns
-- ❌ Manual, reactive approach instead of data-driven, proactive strategy
+**PlaylistPro is losing 1 out of every 2 customers each year** (47% churn rate). With 75,000 subscribers, this translates to millions in lost recurring revenue. The company needed a data-driven way to identify which customers to target and how to allocate limited retention budgets.
 
 ---
 
-### 💡 The Solution
+### What This Dashboard Does
 
-This dashboard implements an **end-to-end prescriptive analytics system** that combines:
+This is a **self-serve analytics tool** that helps managers answer the question: *"Given my budget and resources this week, which customers should I contact, and what retention actions should I take?"*
 
-1. **Predictive Machine Learning** — XGBoost model (94% AUC) predicts individual customer churn probability
-2. **Prescriptive Optimization** — Mixed-Integer Linear Programming assigns optimal retention actions to maximize value
-3. **Smart Constraints** — Respects budget limits, operational capacity, and fairness policies
+**How it works:**
+
+1. **Predictive Model** — An XGBoost machine learning model (94% accuracy) analyzes each customer and calculates their churn probability
+2. **Optimization Engine** — The system automatically determines the optimal treatment plan that maximizes retained customer value while staying within your constraints
+3. **What-If Analysis** — Adjust budgets and policies in the sidebar to see how different scenarios impact results
 
 ---
 
-### 📊 Proven Results
+### Understanding the Controls
 
-**Baseline Scenario** (\\$150 weekly budget, 250 customer sample):
+**Budget & Capacity Constraints:**
+- **Weekly Budget** — Total dollars available for retention campaigns
+- **Email Capacity** — Maximum emails your marketing team can send per week
+- **Push/In-App Capacity** — Maximum push notifications or in-app messages your system can handle
 
-- **\\$3,479 net value** generated
-- **2,319% ROI** — every dollar spent returns \\$23 in retained customer value
-- **75 customers treated** with personalized retention actions
-- **~5 churns prevented** per week
+**Policy Constraints:**
+- **Min High-Risk Coverage** — Ensures you treat at least X% of customers at risk of churning
+- **Min Premium Coverage** — Ensures you don't neglect your high-value Premium subscribers
+- **Max Action Saturation** — Prevents over-reliance on any single retention tactic
+- **Min Segment Coverage** — Ensures all customer segments receive some attention
 
-**Optimal Performance Zone**: \\$250-400 weekly budget delivers strongest returns before diminishing effects.
+---
 
-**Production Ready**: Framework scales to full 75,000 customer base with commercial Gurobi license.
+### How to Read the Results
+
+After running optimization, you'll see:
+
+- **Customers Treated** — How many people receive retention actions
+- **Weekly Spend** — Actual budget used (may be less than your limit)
+- **Churn Prevented** — Expected number of customers who will stay because of your actions
+- **Retained CLV** — Total customer lifetime value saved
+- **ROI** — Return on investment (Retained CLV ÷ Spend × 100%)
+- **Net Value** — Bottom-line impact (Retained CLV - Spend)
+
+**Baseline Performance:** With just \\$150/week budget on a 250 customer sample, the optimizer generated **\\$3,479 net value** (2,319% ROI), treating 75 customers and preventing ~5 churns.
+
+**Sweet Spot:** Testing shows \\$250-400 weekly budget delivers the strongest returns before diminishing effects kick in.
 """)
 
 st.markdown("---")
