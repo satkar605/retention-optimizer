@@ -47,22 +47,46 @@ st.markdown("**Data-Driven Customer Retention Strategy**")
 
 st.markdown("---")
 
-# Business Narrative - One Paragraph
+# Business Context Section
 st.markdown("""
-### Business Context
+### 🎯 The Business Problem
 
-PlaylistPro, a music streaming service with 75,000 subscribers, was losing nearly half its customers annually 
-(47% churn rate), costing millions in recurring revenue. The company had no systematic retention strategy—no 
-predictive analytics to identify high-risk customers, no optimization framework for budget allocation, and unclear 
-ROI on marketing campaigns. This project developed an end-to-end solution combining **XGBoost machine learning** 
-(94% AUC) to predict individual churn probability with **Mixed-Integer Linear Programming** to determine optimal 
-customer-action assignments. The optimization maximizes expected retained customer lifetime value while respecting 
-budget, operational capacity, and fairness constraints. Results from the baseline scenario ($150 weekly budget, 
-250 customer sample) demonstrate exceptional performance: **$3,479 net value** generated with **2,319% ROI**, 
-treating 75 customers and preventing approximately 5 churns. Sensitivity analysis reveals the optimal budget range 
-of **$250-400 per week**, where the model achieves strong returns before diminishing effects become significant. 
-The framework scales to the full 75,000 customer base with a commercial Gurobi license, providing PlaylistPro 
-with a production-ready, data-driven retention strategy.
+PlaylistPro, a music streaming service with **75,000 subscribers**, was facing a critical retention crisis:
+
+- **47% annual churn rate** — losing nearly half of all customers every year
+- **Millions in lost recurring revenue** from customer attrition
+- **No systematic retention strategy** to combat churn
+
+#### Key Gaps
+- ❌ No predictive analytics to identify high-risk customers before they churned
+- ❌ No optimization framework for allocating limited marketing budgets
+- ❌ No clear ROI measurement on retention campaigns
+- ❌ Manual, reactive approach instead of data-driven, proactive strategy
+
+---
+
+### 💡 The Solution
+
+This dashboard implements an **end-to-end prescriptive analytics system** that combines:
+
+1. **Predictive Machine Learning** — XGBoost model (94% AUC) predicts individual customer churn probability
+2. **Prescriptive Optimization** — Mixed-Integer Linear Programming assigns optimal retention actions to maximize value
+3. **Smart Constraints** — Respects budget limits, operational capacity, and fairness policies
+
+---
+
+### 📊 Proven Results
+
+**Baseline Scenario** (\\$150 weekly budget, 250 customer sample):
+
+- **\\$3,479 net value** generated
+- **2,319% ROI** — every dollar spent returns \\$23 in retained customer value
+- **75 customers treated** with personalized retention actions
+- **~5 churns prevented** per week
+
+**Optimal Performance Zone**: \\$250-400 weekly budget delivers strongest returns before diminishing effects.
+
+**Production Ready**: Framework scales to full 75,000 customer base with commercial Gurobi license.
 """)
 
 st.markdown("---")
