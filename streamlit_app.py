@@ -48,55 +48,63 @@ st.markdown("**Data-Driven Customer Retention Strategy**")
 st.markdown("---")
 
 # Business Context Section
-st.markdown("""
-### The Business Problem
+st.markdown("### The Challenge")
+st.info("**PlaylistPro is losing 1 out of every 2 customers each year** (47% churn rate). With 75,000 subscribers, this means millions in lost recurring revenue.")
 
-**PlaylistPro is losing 1 out of every 2 customers each year** (47% churn rate). With 75,000 subscribers, this translates to millions in lost recurring revenue. The company needed a data-driven way to identify which customers to target and how to allocate limited retention budgets.
+st.markdown("### What This Tool Does")
+st.markdown("This **self-serve analytics dashboard** answers: *Given my budget and resources, which customers should I target and what retention actions maximize value?*")
 
----
+col1, col2, col3 = st.columns(3)
 
-### What This Dashboard Does
+with col1:
+    st.markdown("#### 📈 Predict")
+    st.markdown("XGBoost model (94% accuracy) calculates churn probability for each customer")
 
-This is a **self-serve analytics tool** that helps managers answer the question: *"Given my budget and resources this week, which customers should I contact, and what retention actions should I take?"*
+with col2:
+    st.markdown("#### 🎯 Optimize")
+    st.markdown("Algorithm finds the best treatment plan to maximize retained customer value")
 
-**How it works:**
+with col3:
+    st.markdown("#### 🔄 Analyze")
+    st.markdown("Run what-if scenarios by adjusting budgets and policies in the sidebar")
 
-1. **Predictive Model** — An XGBoost machine learning model (94% accuracy) analyzes each customer and calculates their churn probability
-2. **Optimization Engine** — The system automatically determines the optimal treatment plan that maximizes retained customer value while staying within your constraints
-3. **What-If Analysis** — Adjust budgets and policies in the sidebar to see how different scenarios impact results
+st.markdown("---")
 
----
+# Collapsible section for controls explanation
+with st.expander("💡 Understanding the Controls (Click to Expand)"):
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("**Budget & Capacity**")
+        st.markdown("""
+        - **Weekly Budget** — Total campaign spend available
+        - **Email Capacity** — Max emails your team can send
+        - **Push Capacity** — Max push/in-app messages allowed
+        """)
+    
+    with col2:
+        st.markdown("**Policy Constraints**")
+        st.markdown("""
+        - **High-Risk Coverage** — Min % of at-risk customers to treat
+        - **Premium Coverage** — Min % of Premium subscribers to treat
+        - **Action Saturation** — Prevents over-using one tactic
+        - **Segment Coverage** — Ensures all segments get attention
+        """)
 
-### Understanding the Controls
-
-**Budget & Capacity Constraints:**
-- **Weekly Budget** — Total dollars available for retention campaigns
-- **Email Capacity** — Maximum emails your marketing team can send per week
-- **Push/In-App Capacity** — Maximum push notifications or in-app messages your system can handle
-
-**Policy Constraints:**
-- **Min High-Risk Coverage** — Ensures you treat at least X% of customers at risk of churning
-- **Min Premium Coverage** — Ensures you don't neglect your high-value Premium subscribers
-- **Max Action Saturation** — Prevents over-reliance on any single retention tactic
-- **Min Segment Coverage** — Ensures all customer segments receive some attention
-
----
-
-### How to Read the Results
-
-After running optimization, you'll see:
-
-- **Customers Treated** — How many people receive retention actions
-- **Weekly Spend** — Actual budget used (may be less than your limit)
-- **Churn Prevented** — Expected number of customers who will stay because of your actions
-- **Retained CLV** — Total customer lifetime value saved
-- **ROI** — Return on investment (Retained CLV ÷ Spend × 100%)
-- **Net Value** — Bottom-line impact (Retained CLV - Spend)
-
-**Baseline Performance:** With just \\$150/week budget on a 250 customer sample, the optimizer generated **\\$3,479 net value** (2,319% ROI), treating 75 customers and preventing ~5 churns.
-
-**Sweet Spot:** Testing shows \\$250-400 weekly budget delivers the strongest returns before diminishing effects kick in.
-""")
+with st.expander("📊 How to Interpret Results (Click to Expand)"):
+    st.markdown("""
+    | Metric | What It Means |
+    |--------|---------------|
+    | **Customers Treated** | Number of people receiving retention actions |
+    | **Weekly Spend** | Actual budget used (may be less than limit) |
+    | **Churn Prevented** | Expected customers saved from churning |
+    | **Retained CLV** | Total customer lifetime value saved |
+    | **ROI** | Return on investment (%) |
+    | **Net Value** | Bottom-line impact (Retained CLV - Spend) |
+    """)
+    
+    st.success("**Baseline Performance:** \\$150 budget → \\$3,479 net value (2,319% ROI), 75 customers treated, ~5 churns prevented")
+    st.info("**Optimal Range:** \\$250-400 weekly budget delivers strongest returns")
 
 st.markdown("---")
 
